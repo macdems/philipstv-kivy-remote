@@ -1,0 +1,11 @@
+{
+    "configurations": [
+        {
+            "name": "PhilipsTV GUI",
+            "type": "python",
+            "request": "launch",
+            "program": "main.py",
+            "justMyCode": false
+        }
+    ]
+}

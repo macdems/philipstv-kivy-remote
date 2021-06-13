@@ -1,0 +1,252 @@
+#:import S philipstv.gui.resources.S
+#:import LongPressButton philipstv.gui.widgets.buttons
+#:import RepeatButton philipstv.gui.widgets.buttons
+
+<ApplicationButton>:
+    on_release: app.root.current = 'remote'
+
+
+<PinPopup@Popup>
+    id: pin_popup
+    title: 'Enter PIN displayed on your TV'
+    title_align: 'center'
+    size_hint: 1, None
+    height: '148dp'
+    auto_dismiss: False
+    BoxLayout:
+        orientation: 'vertical'
+        TextInput:
+            id: pin_value
+            focus: True
+            multiline: False
+            hint_text:'0000'
+            input_filter:'int'
+            size_hint: 1, None
+            height: '32dp'
+            halign: 'center'
+            font_size: '24dp'
+        Widget:
+            size_hint: 1, None
+            height: '8dp'
+        Button:
+            text: S('OK')
+            size_hint: 1, None
+            on_release:
+                pin_popup.dismiss()
+
+
+<SettingPairButton>:
+    # text_size: self.width - 32, None
+    size_hint_y: None
+    height: max(dp(20), self.texture_size[1] + dp(32))
+    # font_size: '15sp'
+
+
+ScreenManager:
+    id: screen
+
+    canvas.before:
+        Color:
+            rgb: .2, .2, .2
+        Rectangle:
+            size: self.size
+            pos: self.pos
+
+    Screen:
+        name: 'remote'
+        BoxLayout:
+            orientation: 'vertical'
+            GridLayout:
+                size_hint_y: 12
+                cols: 3
+                Button:
+                    font_name: 'FontAwesome.otf'
+                    text: '\uf0eb'
+                    disabled: True
+                    on_release:
+                        screen.transition.direction = 'right'
+                        screen.current = 'ambilight'
+                Button:
+                    font_name: 'FontAwesome.otf'
+                    text: '\uf011'
+                    background_color: 1.0, 0.8, 0.8
+                    on_release: app.keypress('Standby')
+                Button:
+                    font_name: 'FontAwesome.otf'
+                    text: '\uf042'
+                    on_release:
+                        screen.transition.direction = 'left'
+                        screen.current = 'display'
+                LongPressButton:
+                    font_name: 'FontAwesome.otf'
+                    text: '\uf067'
+                    on_release: app.keypress('Options')
+                    on_long_press: app.keypress('Adjust')
+                RepeatButton:
+                    font_name: 'FontAwesome.otf'
+                    text: '\uf0aa'
+                    background_color: 1.2, 1.2, 1.2
+                    on_release: app.keypress('CursorUp')
+                LongPressButton:
+                    font_name: 'FontAwesome.otf'
+                    text: '\uf2f6'
+                    on_release: app.keypress('Source')
+                    on_long_press:
+                        app.open_settings()
+                RepeatButton:
+                    font_name: 'FontAwesome.otf'
+                    text: '\uf0a8'
+                    background_color: 1.2, 1.2, 1.2
+                    on_release: app.keypress('CursorLeft')
+                Button:
+                    font_name: 'FontAwesome.otf'
+                    text: '\uf058'
+                    background_color: 1.2, 1.2, 1.2
+                    on_release: app.keypress('Confirm')
+                    #on_long_press: app.keypress('Options')
+                RepeatButton:
+                    font_name: 'FontAwesome.otf'
+                    text: '\uf0a9'
+                    background_color: 1.2, 1.2, 1.2
+                    on_release: app.keypress('CursorRight')
+                Button:
+                    font_name: 'FontAwesome.otf'
+                    # text: '\uf2ea'
+                    text: '\uf30a'
+                    on_release: app.keypress('Back')
+                RepeatButton:
+                    font_name: 'FontAwesome.otf'
+                    text: '\uf0ab'
+                    background_color: 1.2, 1.2, 1.2
+                    on_release: app.keypress('CursorDown')
+                Button:
+                    font_name: 'FontAwesome.otf'
+                    text: '\uf015'
+                    on_release: app.keypress('Home')
+            BoxLayout:
+                size_hint_y: 0.5
+                orientation: 'horizontal'
+                Button:
+                    background_color: 1, 0, 0, 1
+                    on_release: app.keypress('RedColour')
+                Button:
+                    background_color: 0, 0.7, 0, 1
+                    on_release: app.keypress('GreenColour')
+                Button:
+                    background_color: 1, 1, 0, 1
+                    on_release: app.keypress('YellowColour')
+                Button:
+                    background_color: 0, 0, 1, 1
+                    on_release: app.keypress('BlueColour')
+            GridLayout:
+                size_hint_y: 4
+                cols: 3
+                RepeatButton:
+                    font_name: 'FontAwesome.otf'
+                    text: '\uf04a'
+                    on_release: app.keypress('Rewind')
+                    initial_delay: 0.2
+                Button:
+                    font_name: 'FontAwesome.otf'
+                    text: '\uf04b'
+                    on_release: app.keypress('Play')
+                RepeatButton:
+                    font_name: 'FontAwesome.otf'
+                    text: '\uf04e'
+                    on_release: app.keypress('FastForward')
+                    initial_delay: 0.2
+                Button:
+                    font_name: 'FontAwesome.otf'
+                    text: '\uf04d'
+                    on_release: app.keypress('Stop')
+                Button:
+                    font_name: 'FontAwesome.otf'
+                    text: '\uf04c'
+                    on_release: app.keypress('Pause')
+                LongPressButton:
+                    font_name: 'FontAwesome.otf'
+                    text: '\uf051'
+                    on_release: app.keypress('Next')
+                    on_long_press: app.keypress('Previous')
+                RepeatButton:
+                    font_name: 'FontAwesome.otf'
+                    text: '\uf027'
+                    background_color: 1.2, 1.2, 1.2
+                    on_release: app.keypress('VolumeDown')
+                    initial_delay: 0.2
+                Button:
+                    font_name: 'FontAwesome.otf'
+                    text: '\uf6a9'
+                    background_color: 1.2, 1.2, 1.2
+                    on_release: app.keypress('Mute')
+                RepeatButton:
+                    font_name: 'FontAwesome.otf'
+                    text: '\uf028'
+                    background_color: 1.2, 1.2, 1.2
+                    on_release: app.keypress('VolumeUp')
+                    initial_delay: 0.2
+            Button:
+                text: S('Applications')
+                on_release:
+                    screen.transition.direction = 'up'
+                    screen.current = 'apps'
+
+    Screen:
+        name: 'ambilight'
+        BoxLayout:
+            orientation: 'vertical'
+            Widget:
+            Button:
+                text: S('Back')
+                size_hint: 1, None
+                on_release:
+                    screen.transition.direction = 'left'
+                    screen.current = 'remote'
+
+    Screen:
+        name: 'display'
+        on_pre_enter:
+            app.fill_display_modes(display_modes)
+        BoxLayout:
+            orientation: 'vertical'
+            RecycleView:
+                id: display_modes
+                viewclass: 'DisplayModeButton'
+                RecycleBoxLayout:
+                    default_size_hint: 1, 1
+                    orientation: 'vertical'
+            Label:
+                size_hint_y: None
+            Button:
+                text: S('Back')
+                size_hint: 1, None
+                on_release:
+                    screen.transition.direction = 'right'
+                    screen.current = 'remote'
+
+    Screen:
+        name: 'apps'
+        on_pre_enter:
+            app.fill_applications(applications)
+        on_pre_leave:
+            screen.transition.direction = 'down'
+        BoxLayout:
+            orientation: 'vertical'
+            ScrollView:
+                do_scroll_x: False
+                do_scroll_y: True
+                RecycleView:
+                    id: applications
+                    viewclass: 'ApplicationButton'
+                    RecycleBoxLayout:
+                        default_size_hint: 1, None
+                        size_hint: 1, None
+                        height: self.minimum_height
+                        orientation: 'vertical'
+            Label:
+                size_hint_y: None
+            Button:
+                text: S('Back')
+                size_hint: 1, None
+                on_release:
+                    screen.current = 'remote'
