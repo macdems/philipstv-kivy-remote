@@ -2,20 +2,25 @@ import os
 import re
 # import asyncio
 
+import kivy.utils
+
 from kivy.app import App
 from kivy.core.window import Window
 from kivy.factory import Factory
-from kivy.uix.settings import SettingString
+from kivy.clock import Clock
+from kivy.uix.settings import SettingString, SettingsWithNoMenu
 
 from .widgets.toast import toast
 
-from ..api import PhilipsAPI
+from . import resources
 from .resources import S
+from ..api import PhilipsAPI
 
 BASE_PATH = os.path.dirname(os.path.abspath(__file__))
 
-window_width = Window.size[0]
-Window.size = window_width, 2 * window_width
+if kivy.utils.platform != 'android':
+    window_width = Window.size[0]
+    Window.size = window_width, 2 * window_width
 
 
 class DisplayModeButton(Factory.ToggleButton):
@@ -38,52 +43,120 @@ class SettingMac(SettingString):
 
 class SettingPairButton(Factory.Button):
     def __init__(self, panel):
-        super().__init__(text="Pair")
+        super().__init__(text=S("Pair"))
 
     def on_release(self):
         App.get_running_app().pair()
 
 
 class PhilipsTVApp(App):
+    use_kivy_settings = False
+
     def __init__(self):
         super().__init__()
         self.api = PhilipsAPI()
 
+    def load_kv(self, filename=None):
+        resources.LANG = self.config.get('interface', 'lang')
+        super().load_kv(filename)
+
     def build(self):
-        self.icon = os.path.join(BASE_PATH, 'data', 'remote.png')
+        self.settings_cls = SettingsWithNoMenu
+        self.icon = os.path.join(BASE_PATH, 'data', 'icon.png')
         self.api.host = self.config.get('philipstv', 'host')
         self.api.mac = self.config.get('philipstv', 'mac')
         self.api.user = self.config.get('philipstv', 'user')
         self.api.passwd = self.config.get('philipstv', 'passwd')
+        Window.bind(on_keyboard=self.on_keyboard_back)
+        self.clean_hello()
+
+    def clean_hello(self):
+        if self.api.host:
+            self.root.ids.remote.remove_widget(self.root.ids.hello)
 
     def build_config(self, config):
         config.setdefaults('philipstv', {'host': '', 'mac': '', 'user': '', 'passwd': ''})
+        config.setdefaults('interface', {'lang': 'English'})
 
     def build_settings(self, settings):
-        jsondata = """
+        connection = """
         [
-            {
+            {{
+                "type": "title",
+                "title": "{interface}"
+            }},
+            {{
+                "type": "options",
+                "title": "{lang}",
+                "desc": "{lang_desc}",
+                "section": "interface",
+                "key": "lang",
+                "options": ["{lang_options}"]
+            }},
+            {{
+                "type": "title",
+                "title": "{connection}"
+            }},
+            {{
                 "type": "string",
-                "title": "IP Address",
-                "desc": "IP address of the Philips TV",
+                "title": "{ip}",
+                "desc": "{ip_desc}",
                 "section": "philipstv",
                 "key": "host"
-            },
-            {
+            }},
+            {{
                 "type": "mac_address",
-                "title": "MAC Address",
-                "desc": "MAC address of the Philips TV used for wakeup",
+                "title": "{mac}",
+                "desc": "{mac_desc}",
                 "section": "philipstv",
                 "key": "mac"
-            },
-            {
+            }},
+            {{
                 "type": "pair_button"
-            }
+            }}
         ]
-        """
+        """.format(
+            interface=S('Interface'),
+            lang=S('Language'),
+            lang_desc=S('Language of the application (needs restart)'),
+            lang_options='", "'.join(lang for lang in resources.STRINGS.keys()),
+            connection=S('TV Connection'),
+            ip=S('IP Address'),
+            ip_desc=S('IP address of the Philips TV'),
+            mac=S('MAC Address'),
+            mac_desc=S('MAC address of the Philips TV used for wakeup')
+        )
         settings.register_type('pair_button', SettingPairButton)
         settings.register_type('mac_address', SettingMac)
-        settings.add_json_panel(S('TV Connection'), self.config, data=jsondata)
+        settings.add_json_panel(S('Settins'), self.config, data=connection)
+
+    def display_settings(self, settings):
+        panel = self.root.ids.settings
+        if settings not in panel.children:
+            panel.add_widget(settings, 1)
+        self.root.current = 'settings'
+        return True
+
+    def close_settings(self, *largs):
+        if self.root.current == 'settings':
+            self.root.current = 'remote'
+            if self.set_mac():
+                settings = self._app_settings
+                panel = self.root.ids.settings
+                panel.remove_widget(settings)
+                self.destroy_settings()
+            return True
+
+    def set_mac(self, *largs):
+        if self.api.mac == '':
+            try:
+                self.config.set('philipstv', 'mac', self.api.set_mac())
+            except:
+                pass
+            else:
+                self.config.write()
+                return True
+        return False
 
     def on_config_change(self, config, section, key, value):
         if section != 'philipstv':
@@ -93,8 +166,19 @@ class PhilipsTVApp(App):
         if key == 'mac':
             self.api.mac = value
 
+    def on_keyboard_back(self, window, key, *largs):
+        if key == 27:
+            if self.root.current != 'remote':
+                self.root.current = 'remote'
+                return True
+
     def pair(self):
-        data = self.api.pair_request()
+        try:
+            data = self.api.pair_request()
+        except Exception as err:
+            toast(S(err), 4.0)
+            return
+
         if data is not None:
 
             def on_pin_entered(instance):
@@ -105,11 +189,7 @@ class PhilipsTVApp(App):
                 else:
                     self.config.set('philipstv', 'user', self.api.user)
                     self.config.set('philipstv', 'passwd', self.api.passwd)
-                    try:
-                        self.config.set('philipstv', 'mac', self.api.set_mac())
-                    except Exception as err:
-                        toast(S(err), 4.0)
-                    self.config.save()
+                    self.config.write()
 
             popup = Factory.PinPopup()
             popup.bind(on_dismiss=on_pin_entered)

@@ -1,0 +1,32 @@
+{
+    // See https://go.microsoft.com/fwlink/?LinkId=733558
+    // for the documentation about the tasks.json format
+    "version": "2.0.0",
+    "tasks": [
+        {
+            "label": "Build Debug",
+            "type": "shell",
+            "command": "buildozer android debug",
+            "problemMatcher": [],
+            "group": {
+                "kind": "build",
+                "isDefault": true
+            }
+        },
+        {
+            "label": "Build Release",
+            "type": "shell",
+            "command": "P4A_RELEASE_KEYSTORE_PASSWD=$(secret-tool lookup keystore $P4A_RELEASE_KEYSTORE) P4A_RELEASE_KEYALIAS_PASSWD=$(secret-tool lookup keystore $P4A_RELEASE_KEYSTORE alias $P4A_RELEASE_KEYALIAS) buildozer android release",
+            "problemMatcher": [],
+            "group": {
+                "kind": "build",
+                "isDefault": true
+            }
+        },
+        {
+            "label": "Deploy",
+            "type": "shell",
+            "command": "buildozer android deploy"
+        }
+    ]
+}

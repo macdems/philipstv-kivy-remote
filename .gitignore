@@ -1,1 +1,4 @@
 /philipstv/gui/*.ini
+/bin
+/.buildozer
+/.vscode/working_sets.json

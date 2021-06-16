@@ -1,0 +1,93 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<svg
+   viewBox="0 0 30.985879 35.009655"
+   version="1.1"
+   x="0px"
+   y="0px"
+   id="svg22"
+   sodipodi:docname="tap_hold.svg"
+   width="30.98588"
+   height="35.009655"
+   inkscape:version="1.1 (c4e8f9ed74, 2021-05-24)"
+   inkscape:export-filename="tap_hold.png"
+   inkscape:export-xdpi="1362.8199"
+   inkscape:export-ydpi="1362.8199"
+   xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
+   xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
+   xmlns="http://www.w3.org/2000/svg"
+   xmlns:svg="http://www.w3.org/2000/svg"
+   xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+   xmlns:cc="http://creativecommons.org/ns#"
+   xmlns:dc="http://purl.org/dc/elements/1.1/"
+   xmlns:sketch="http://www.bohemiancoding.com/sketch/ns">
+  <defs
+     id="defs26" />
+  <sodipodi:namedview
+     id="namedview24"
+     pagecolor="#ffffff"
+     bordercolor="#666666"
+     borderopacity="1.0"
+     inkscape:pageshadow="2"
+     inkscape:pageopacity="0.0"
+     inkscape:pagecheckerboard="0"
+     showgrid="false"
+     inkscape:zoom="3.9786542"
+     inkscape:cx="12.944075"
+     inkscape:cy="21.489679"
+     inkscape:window-width="1866"
+     inkscape:window-height="1047"
+     inkscape:window-x="0"
+     inkscape:window-y="0"
+     inkscape:window-maximized="1"
+     inkscape:current-layer="svg22"
+     fit-margin-top="0"
+     fit-margin-left="0"
+     fit-margin-right="0"
+     fit-margin-bottom="0"
+     inkscape:showpageshadow="false"
+     borderlayer="true"
+     inkscape:snap-global="false" />
+  <title
+     id="title2">gesture_004-tap_hold-clock-hand-touch-finger</title>
+  <desc
+     id="desc4">Created with Sketch.</desc>
+  <g
+     stroke="none"
+     stroke-width="1"
+     fill="none"
+     fill-rule="evenodd"
+     sketch:type="MSPage"
+     id="g16"
+     transform="matrix(1.2840353,0,0,1.2837281,-4.952858,-6.4079238)"
+     style="fill:#ccff42;stroke:#2d2d2d;stroke-width:0.584167;stroke-miterlimit:4;stroke-dasharray:none;paint-order:stroke fill markers">
+    <path
+       d="m 27.696819,13.208623 c 0,-2.485282 -2.014719,-4.5000009 -4.5,-4.5000009 -2.485281,0 -4.5,2.0147189 -4.5,4.5000009 0,2.485281 2.014719,4.5 4.5,4.5 2.485281,0 4.5,-2.014719 4.5,-4.5 z m -8,0 c 0,-1.932997 1.567003,-3.5000009 3.5,-3.5000009 1.932997,0 3.5,1.5670039 3.5,3.5000009 0,1.932997 -1.567003,3.5 -3.5,3.5 -1.932997,0 -3.5,-1.567003 -3.5,-3.5 z m 3,0 c 0,0.276142 0.223858,0.5 0.5,0.5 h 1.5 c 0.276142,0 0.5,-0.223858 0.5,-0.5 0,-0.276142 -0.223858,-0.5 -0.5,-0.5 h -1 v -1.500001 c 0,-0.276142 -0.223858,-0.5 -0.5,-0.5 -0.276142,0 -0.5,0.223858 -0.5,0.5 z"
+       sketch:type="MSShapeGroup"
+       id="path8"
+       style="fill:#ccff42;stroke:#2d2d2d;stroke-width:0.584167;stroke-miterlimit:4;stroke-dasharray:none;paint-order:stroke fill markers" />
+    <g
+       id="g1281"
+       transform="matrix(0.90751031,0.42139584,-0.41866822,0.90751031,6.5096672,-4.3596462)"
+       style="fill:#ccff42;stroke-width:0.584167">
+      <path
+         d="m 19,14 c -0.411659,0 -0.794269,0.124371 -1.112305,0.337589 C 17.614342,13.558572 16.872402,13 16,13 c -0.364287,0 -0.705827,0.09739 -1,0.267564 V 9 C 15,7.8954305 14.10457,7 13,7 11.895431,7 11,7.8954305 11,9 v 9.758967 L 9.9903516,17.010205 C 9.4380668,16.05362 8.214886,15.72587 7.2583008,16.278154 6.3017155,16.830439 5.9739652,18.05362 6.52625,19.010205 c 0.1272056,0.220327 0.6170149,1.067817 0.7188075,1.245011 0.77838,1.354952 1.047791,3.650964 1.8296328,5.007675 1.0909597,1.893115 2.9171697,4.387202 3.0196637,4.52943 0.161445,0.224032 0.473935,0.274769 0.697967,0.113325 0.224032,-0.161445 0.274769,-0.473935 0.113325,-0.697967 C 12.805023,29.068047 10.836662,26.328326 9.9387834,24.760273 9.3289796,23.695312 8.9653931,21.221313 8.111083,19.755216 8.0083583,19.578929 7.519481,18.730532 7.3922754,18.510205 7.116133,18.031912 7.2800082,17.420322 7.7583008,17.14418 8.2365934,16.868037 8.8481838,17.031912 9.1243262,17.510205 L 10.995337,20.75089 C 11.17041,21.117676 12,21.099121 12,20.5 V 9 c 0,-0.5522848 0.447715,-1 1,-1 0.552285,0 1,0.4477152 1,1 v 8.5 c 0,0.276142 0.223858,0.5 0.5,0.5 0.276142,0 0.5,-0.223858 0.5,-0.5 V 15 c 0,-0.552285 0.447715,-1 1,-1 0.552285,0 1,0.447715 1,1 v 2.5 c 0,0.276142 0.223858,0.5 0.5,0.5 0.276142,0 0.5,-0.223858 0.5,-0.5 V 16 c 0,-0.552285 0.447715,-1 1,-1 0.552285,0 1,0.447715 1,1 v 2.5 c 0,0.276142 0.223858,0.5 0.5,0.5 0.276142,0 0.5,-0.223858 0.5,-0.5 V 17 c 0,-0.552285 0.447715,-1 1,-1 0.552285,0 1,0.447715 1,1 v 3.5 c 0,3.274719 -2,6.395325 -2,9 0,0.276142 0.223858,0.5 0.5,0.5 0.276142,0 0.5,-0.223858 0.5,-0.5 0,-2.244446 2,-5.712585 2,-9 V 17 c 0,-1.104569 -0.895431,-2 -2,-2 -0.411659,0 -0.794269,0.124371 -1.112305,0.337589 C 20.614342,14.558572 19.872402,14 19,14 Z"
+         sketch:type="MSShapeGroup"
+         id="path6"
+         style="fill:#ccff42;stroke:#2d2d2d;stroke-width:0.584167;stroke-miterlimit:4;stroke-dasharray:none;paint-order:stroke fill markers" />
+      <path
+         d="M 10,11.645824 C 9.3776366,10.940691 9,10.014447 9,9 9,6.790861 10.790861,5 13,5 c 2.209139,0 4,1.790861 4,4 0,1.014447 -0.377637,1.940691 -1,2.645824 V 9 C 16,7.3431457 14.656854,6 13,6 11.343146,6 10,7.3431457 10,9 Z"
+         sketch:type="MSShapeGroup"
+         id="path10"
+         style="fill:#ccff42;stroke:#2d2d2d;stroke-width:0.584167;stroke-miterlimit:4;stroke-dasharray:none;paint-order:stroke fill markers" />
+    </g>
+  </g>
+  <metadata
+     id="metadata1258">
+    <rdf:RDF>
+      <cc:Work
+         rdf:about="">
+        <dc:title>gesture_004-tap_hold-clock-hand-touch-finger</dc:title>
+      </cc:Work>
+    </rdf:RDF>
+  </metadata>
+</svg>

@@ -43,8 +43,6 @@
 
 
 ScreenManager:
-    id: screen
-
     canvas.before:
         Color:
             rgb: .2, .2, .2
@@ -54,73 +52,86 @@ ScreenManager:
 
     Screen:
         name: 'remote'
+        id: remote
         BoxLayout:
             orientation: 'vertical'
             GridLayout:
                 size_hint_y: 12
                 cols: 3
                 Button:
-                    font_name: 'FontAwesome.otf'
+                    font_name: 'philipstv/gui/data/FontAwesome.ttf'
+                    font_size: '32dp'
                     text: '\uf0eb'
                     disabled: True
                     on_release:
-                        screen.transition.direction = 'right'
-                        screen.current = 'ambilight'
+                        root.current = 'ambilight'
                 Button:
-                    font_name: 'FontAwesome.otf'
+                    font_name: 'philipstv/gui/data/FontAwesome.ttf'
+                    font_size: '32dp'
                     text: '\uf011'
-                    background_color: 1.0, 0.8, 0.8
+                    # background_color: 1.0, 0.8, 0.8
+                    color: 1.0, 0.3, 0.3, 1
                     on_release: app.keypress('Standby')
                 Button:
-                    font_name: 'FontAwesome.otf'
+                    font_name: 'philipstv/gui/data/FontAwesome.ttf'
+                    font_size: '32dp'
                     text: '\uf042'
                     on_release:
-                        screen.transition.direction = 'left'
-                        screen.current = 'display'
+                        root.current = 'display'
                 LongPressButton:
-                    font_name: 'FontAwesome.otf'
+                    font_name: 'philipstv/gui/data/FontAwesome.ttf'
+                    font_size: '32dp'
                     text: '\uf067'
                     on_release: app.keypress('Options')
                     on_long_press: app.keypress('Adjust')
                 RepeatButton:
-                    font_name: 'FontAwesome.otf'
+                    font_name: 'philipstv/gui/data/FontAwesome.ttf'
+                    font_size: '32dp'
                     text: '\uf0aa'
-                    background_color: 1.2, 1.2, 1.2
+                    # background_color: 1.2, 1.2, 1.2
                     on_release: app.keypress('CursorUp')
                 LongPressButton:
-                    font_name: 'FontAwesome.otf'
+                    id: src
+                    font_name: 'philipstv/gui/data/FontAwesome.ttf'
+                    font_size: '32dp'
                     text: '\uf2f6'
                     on_release: app.keypress('Source')
                     on_long_press:
                         app.open_settings()
                 RepeatButton:
-                    font_name: 'FontAwesome.otf'
+                    font_name: 'philipstv/gui/data/FontAwesome.ttf'
+                    font_size: '32dp'
                     text: '\uf0a8'
-                    background_color: 1.2, 1.2, 1.2
+                    # background_color: 1.2, 1.2, 1.2
                     on_release: app.keypress('CursorLeft')
                 Button:
-                    font_name: 'FontAwesome.otf'
+                    font_name: 'philipstv/gui/data/FontAwesome.ttf'
+                    font_size: '32dp'
                     text: '\uf058'
-                    background_color: 1.2, 1.2, 1.2
+                    # background_color: 1.2, 1.2, 1.2
                     on_release: app.keypress('Confirm')
                     #on_long_press: app.keypress('Options')
                 RepeatButton:
-                    font_name: 'FontAwesome.otf'
+                    font_name: 'philipstv/gui/data/FontAwesome.ttf'
+                    font_size: '32dp'
                     text: '\uf0a9'
-                    background_color: 1.2, 1.2, 1.2
+                    # background_color: 1.2, 1.2, 1.2
                     on_release: app.keypress('CursorRight')
                 Button:
-                    font_name: 'FontAwesome.otf'
+                    font_name: 'philipstv/gui/data/FontAwesome.ttf'
+                    font_size: '32dp'
                     # text: '\uf2ea'
                     text: '\uf30a'
                     on_release: app.keypress('Back')
                 RepeatButton:
-                    font_name: 'FontAwesome.otf'
+                    font_name: 'philipstv/gui/data/FontAwesome.ttf'
+                    font_size: '32dp'
                     text: '\uf0ab'
-                    background_color: 1.2, 1.2, 1.2
+                    # background_color: 1.2, 1.2, 1.2
                     on_release: app.keypress('CursorDown')
                 Button:
-                    font_name: 'FontAwesome.otf'
+                    font_name: 'philipstv/gui/data/FontAwesome.ttf'
+                    font_size: '32dp'
                     text: '\uf015'
                     on_release: app.keypress('Home')
             BoxLayout:
@@ -142,57 +153,71 @@ ScreenManager:
                 size_hint_y: 4
                 cols: 3
                 RepeatButton:
-                    font_name: 'FontAwesome.otf'
+                    font_name: 'philipstv/gui/data/FontAwesome.ttf'
                     text: '\uf04a'
                     on_release: app.keypress('Rewind')
                     initial_delay: 0.2
                 Button:
-                    font_name: 'FontAwesome.otf'
+                    font_name: 'philipstv/gui/data/FontAwesome.ttf'
                     text: '\uf04b'
                     on_release: app.keypress('Play')
                 RepeatButton:
-                    font_name: 'FontAwesome.otf'
+                    font_name: 'philipstv/gui/data/FontAwesome.ttf'
                     text: '\uf04e'
                     on_release: app.keypress('FastForward')
                     initial_delay: 0.2
                 Button:
-                    font_name: 'FontAwesome.otf'
+                    font_name: 'philipstv/gui/data/FontAwesome.ttf'
                     text: '\uf04d'
                     on_release: app.keypress('Stop')
                 Button:
-                    font_name: 'FontAwesome.otf'
+                    font_name: 'philipstv/gui/data/FontAwesome.ttf'
                     text: '\uf04c'
                     on_release: app.keypress('Pause')
                 LongPressButton:
-                    font_name: 'FontAwesome.otf'
+                    font_name: 'philipstv/gui/data/FontAwesome.ttf'
                     text: '\uf051'
                     on_release: app.keypress('Next')
                     on_long_press: app.keypress('Previous')
                 RepeatButton:
-                    font_name: 'FontAwesome.otf'
+                    font_name: 'philipstv/gui/data/FontAwesome.ttf'
+                    font_size: '24dp'
                     text: '\uf027'
-                    background_color: 1.2, 1.2, 1.2
+                    background_color: 1.2, 1.2, 1.2, 1
                     on_release: app.keypress('VolumeDown')
                     initial_delay: 0.2
                 Button:
-                    font_name: 'FontAwesome.otf'
+                    font_name: 'philipstv/gui/data/FontAwesome.ttf'
+                    font_size: '24dp'
                     text: '\uf6a9'
-                    background_color: 1.2, 1.2, 1.2
+                    background_color: 1.2, 1.2, 1.2, 1
                     on_release: app.keypress('Mute')
                 RepeatButton:
-                    font_name: 'FontAwesome.otf'
+                    font_name: 'philipstv/gui/data/FontAwesome.ttf'
+                    font_size: '24dp'
                     text: '\uf028'
-                    background_color: 1.2, 1.2, 1.2
+                    background_color: 1.2, 1.2, 1.2, 1
                     on_release: app.keypress('VolumeUp')
                     initial_delay: 0.2
             Button:
                 text: S('Applications')
                 on_release:
-                    screen.transition.direction = 'up'
-                    screen.current = 'apps'
+                    root.transition.direction = 'up'
+                    root.current = 'apps'
+        Widget:
+            id: hello
+            canvas:
+                Rectangle:
+                    source: 'philipstv/gui/data/tap_hold.png'
+                    pos: src.pos[0] + 0.09 * src.size[0], src.pos[1] - 0.36 * src.size[1]
+                    size: 0.90 *  src.size[0], 0.90 * src.size[0] * 35 / 31
 
     Screen:
         name: 'ambilight'
+        on_pre_enter:
+            root.transition.direction = 'right'
+        on_pre_leave:
+            root.transition.direction = 'left'
         BoxLayout:
             orientation: 'vertical'
             Widget:
@@ -200,13 +225,15 @@ ScreenManager:
                 text: S('Back')
                 size_hint: 1, None
                 on_release:
-                    screen.transition.direction = 'left'
-                    screen.current = 'remote'
+                    root.current = 'remote'
 
     Screen:
         name: 'display'
         on_pre_enter:
+            root.transition.direction = 'left'
             app.fill_display_modes(display_modes)
+        on_pre_leave:
+            root.transition.direction = 'right'
         BoxLayout:
             orientation: 'vertical'
             RecycleView:
@@ -221,15 +248,31 @@ ScreenManager:
                 text: S('Back')
                 size_hint: 1, None
                 on_release:
-                    screen.transition.direction = 'right'
-                    screen.current = 'remote'
+                    root.current = 'remote'
+
+    Screen:
+        name: 'settings'
+        on_pre_enter:
+            root.transition.direction = 'left'
+        on_pre_leave:
+            root.transition.direction = 'right'
+            app.clean_hello()
+        BoxLayout:
+            orientation: 'vertical'
+            id: settings
+            Button:
+                text: S('Back')
+                size_hint: 1, None
+                on_release:
+                    root.current = 'remote'
 
     Screen:
         name: 'apps'
         on_pre_enter:
+            root.transition.direction = 'up'
             app.fill_applications(applications)
         on_pre_leave:
-            screen.transition.direction = 'down'
+            root.transition.direction = 'down'
         BoxLayout:
             orientation: 'vertical'
             ScrollView:
@@ -249,4 +292,4 @@ ScreenManager:
                 text: S('Back')
                 size_hint: 1, None
                 on_release:
-                    screen.current = 'remote'
+                    root.current = 'remote'

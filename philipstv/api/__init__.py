@@ -5,10 +5,16 @@ import requests
 
 from time import sleep
 from base64 import b64encode, b64decode
-from Crypto.Hash import SHA, HMAC
+# from Crypto.Hash import SHA, HMAC
 from requests.auth import HTTPDigestAuth
 
 from .wol import send_magic_packet
+
+class NoHost(Exception):
+    def __init__(self, msg=None):
+        if msg is None:
+            msg = "No host. Please set IP of your TV."
+        super().__init__(msg)
 
 class NotRechable(Exception):
     def __init__(self, msg=None):
@@ -52,6 +58,7 @@ class PhilipsAPI:
             sleep(waketime)
 
     def _get(self, path, timeout=None):
+        if not self.host: raise NoHost()
         if timeout is None: timeout = self._timeout
         waketime = self._waketime
         last = self._repeats - 1
@@ -81,6 +88,7 @@ class PhilipsAPI:
                 raise requests.APIError(response=resp)
 
     def _post(self, path, body, timeout=None, userpass=None):
+        if not self.host: raise NoHost()
         if timeout is None: timeout = self._timeout
         waketime = self._waketime
         if userpass is None: userpass = self.user, self.passwd
@@ -111,9 +119,9 @@ class PhilipsAPI:
                     raise NotAuthorized()
                 raise requests.APIError(response=resp)
 
-    def _create_signature(self, to_sign):
-        sign = HMAC.new(b64decode(self.SECRET), to_sign, SHA)
-        return b64encode(sign.digest()).decode()
+    # def _create_signature(self, to_sign):
+    #     sign = HMAC.new(b64decode(self.SECRET), to_sign, SHA)
+    #     return b64encode(sign.digest()).decode()
 
     def pair_request(self):
         user = ''.join(
@@ -123,7 +131,7 @@ class PhilipsAPI:
             'device_name': 'heliotrope',
             'device_os': 'Android',
             'app_id': 'app.id',
-            'app_name': 'Kivi PhilipsTV Remote',
+            'app_name': 'PhilipsTV Kivy Remote',
             'type': 'native',
             'id': user
         }
@@ -139,7 +147,8 @@ class PhilipsAPI:
             'auth_AppId': '1',
             'pin': pin,
             'auth_timestamp': auth_timestamp,
-            'auth_signature': self._create_signature(str(auth_timestamp).encode() + pin.encode())
+            # 'auth_signature': self._create_signature(str(auth_timestamp).encode() + pin.encode())
+            'auth_signature': 'authsignature'
         }
         grant_data = {'auth': auth, 'device': device}
         self._post('pair/grant', grant_data, userpass=(user, passwd))

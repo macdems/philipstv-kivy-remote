@@ -1,4 +1,4 @@
-LANG = 'Polish'
+LANG = 'English'
 
 
 def S(string):
@@ -32,7 +32,7 @@ STRINGS = {
         'org.droidtv.ui.strings.R.string.MAIN_ISF_DAY': "ISF Day",
         'org.droidtv.ui.strings.R.string.MAIN_ISF_NIGHT': "ISF Night",
     },
-    'Polish': {
+    'Polski': {
         'org.droidtv.ui.strings.R.string.MISC_AI': 'Automatyczne',
         'org.droidtv.ui.strings.R.string.MAIN_PERSONAL': 'Osobiste',
         'org.droidtv.ui.strings.R.string.MAIN_VIVID': 'Jaskrawe',
@@ -55,10 +55,21 @@ STRINGS = {
         'org.droidtv.ui.strings.R.string.MAIN_ISF_NIGHT': "ISF noc",
         'Back': "Wstecz",
         'Applications': "Aplikacje",
+        'Pair': "Paruj",
+        'Press Back again to exit': "Proszę nacisnąć Wstecz ponownie aby zakończyć",
+        'Interface': "Interfejs",
+        'Language': "Język",
+        'Language of the application (needs restart)': "Język aplikacji (wymagany restart)",
+        'TV Connection': "Połączenie z TV",
+        'IP Address': "Adres IP",
+        'IP address of the Philips TV': "Adres IP telewizora Philips",
+        'MAC Address': "Adres MAC",
+        'MAC address of the Philips TV used for wakeup': "Adres MAC telewizora Philips (automatyczne wybudzenie)",
 
         'Cannot reach TV. Make sure you have set correct IP and Wake-on-Lan on your TV is on.':
             "Nie można połączyć się z telewizorem. Upewnij się, że masz ustawiony prawidłowy adres IP, "
             "a funkcja Wake-on-Lan na telewizorze jest włączona. ",
-        'Remote not authorized. Please pair again.': "Pilot nie posiada autoryzacji. Sparuj go ponownie.",
+        'Remote not authorized. Please pair again.': "Pilot nie posiada autoryzacji. Proszę spować go ponownie.",
+        'No host. Please set IP of your TV.': "Brak zdefiniowanego adresu IP telewizora. Proszę go podać w ustawieniach."
     }
 }
