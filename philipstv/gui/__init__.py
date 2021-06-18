@@ -1,14 +1,15 @@
 import os
 import re
+
 # import asyncio
 
 import kivy.utils
-
 from kivy.app import App
 from kivy.core.window import Window
 from kivy.factory import Factory
-from kivy.clock import Clock
+from kivy.properties import ObjectProperty
 from kivy.uix.settings import SettingString, SettingsWithNoMenu
+from kivy.uix.togglebutton import ToggleButton
 
 from .widgets.toast import toast
 
@@ -23,9 +24,16 @@ if kivy.utils.platform != 'android':
     Window.size = window_width, 2 * window_width
 
 
-class DisplayModeButton(Factory.ToggleButton):
+class ControlButton(Factory.ToggleButton):
+    settings = ObjectProperty()
+
     def on_release(self):
-        App.get_running_app().select_display_mode(self)
+        api = App.get_running_app().api
+        try:
+            for node, data in self.settings.items():
+                api.update_setting(node, data)
+        except Exception as err:
+            App.get_running_app().toast(S(err), 4.0)
 
 
 class ApplicationButton(Factory.Button):
@@ -55,6 +63,7 @@ class PhilipsTVApp(App):
     def __init__(self):
         super().__init__()
         self.api = PhilipsAPI()
+        self._ambilight_topology = None
 
     def load_kv(self, filename=None):
         resources.LANG = self.config.get('interface', 'lang')
@@ -79,35 +88,35 @@ class PhilipsTVApp(App):
         config.setdefaults('interface', {'lang': 'English'})
 
     def build_settings(self, settings):
-        connection = """
+        connection = f"""
         [
             {{
                 "type": "title",
-                "title": "{interface}"
+                "title": "{S('Interface')}"
             }},
             {{
                 "type": "options",
-                "title": "{lang}",
-                "desc": "{lang_desc}",
+                "title": "{S('Language')}",
+                "desc": "{S('Language of the application (needs restart)')}",
                 "section": "interface",
                 "key": "lang",
-                "options": ["{lang_options}"]
+                "options": ["{'", "'.join(lang for lang in resources.STRINGS.keys())}"]
             }},
             {{
                 "type": "title",
-                "title": "{connection}"
+                "title": "{S('TV Connection')}"
             }},
             {{
                 "type": "string",
-                "title": "{ip}",
-                "desc": "{ip_desc}",
+                "title": "{S('IP Address')}",
+                "desc": "{S('IP address of the Philips TV')}",
                 "section": "philipstv",
                 "key": "host"
             }},
             {{
                 "type": "mac_address",
-                "title": "{mac}",
-                "desc": "{mac_desc}",
+                "title": "{S('MAC Address')}",
+                "desc": "{S('MAC address of the Philips TV used for wakeup')}",
                 "section": "philipstv",
                 "key": "mac"
             }},
@@ -115,17 +124,7 @@ class PhilipsTVApp(App):
                 "type": "pair_button"
             }}
         ]
-        """.format(
-            interface=S('Interface'),
-            lang=S('Language'),
-            lang_desc=S('Language of the application (needs restart)'),
-            lang_options='", "'.join(lang for lang in resources.STRINGS.keys()),
-            connection=S('TV Connection'),
-            ip=S('IP Address'),
-            ip_desc=S('IP address of the Philips TV'),
-            mac=S('MAC Address'),
-            mac_desc=S('MAC address of the Philips TV used for wakeup')
-        )
+        """
         settings.register_type('pair_button', SettingPairButton)
         settings.register_type('mac_address', SettingMac)
         settings.add_json_panel(S('Settins'), self.config, data=connection)
@@ -148,7 +147,7 @@ class PhilipsTVApp(App):
             return True
 
     def set_mac(self, *largs):
-        if self.api.mac == '':
+        if not self.api.mac:
             try:
                 self.config.set('philipstv', 'mac', self.api.set_mac())
             except:
@@ -183,7 +182,7 @@ class PhilipsTVApp(App):
 
             def on_pin_entered(instance):
                 try:
-                    self.api.pair_confirm(pin=instance.ids.pin_value.text, **data)
+                    self.api.pair_grant(pin=instance.ids.pin_value.text, **data)
                 except Exception as err:
                     toast(S(err), 4.0)
                 else:
@@ -203,13 +202,17 @@ class PhilipsTVApp(App):
 
     def fill_display_modes(self, widget):
         try:
-            res = self.api.get_current_settings(2131230858)
-            items = res['values'][0]['value']['data']
+            items = self.api.get_settings(self.api.PICTURE_STYLE)[self.api.PICTURE_STYLE]['data']
             selected_item = items['selected_item']
+            translations = self.api.get_strings(S('_country'), S('_lang'), [i['string_id'] for i in items['enum_values']])
             widget.data = [{
-                'text': S(item['string_id']),
+                'text': translations.get(item['string_id'], item['string_id']),
                 'group': 'display_modes',
-                'enum_id': item['enum_id'],
+                'settings': {
+                    self.api.PICTURE_STYLE: {
+                        'selected_item': item['enum_id']
+                    }
+                },
                 'state': 'down' if item['enum_id'] == selected_item else 'normal',
                 'allow_no_selection': False,
             } for item in items['enum_values'] if item['available']]
@@ -217,11 +220,77 @@ class PhilipsTVApp(App):
             toast(S(err), 4.0)
             widget.data = []
 
-    def select_display_mode(self, widget):
+    def fill_ambilight(self):
+        ids = self.root.ids
+        nodes = {
+            self.api.AMBILIGHT_MENU_FOLLOW_VIDEO: (ids.ambilight_video, ids.ambilight_video_ac),
+            self.api.AMBILIGHT_MENU_FOLLOW_AUDIO: (ids.ambilight_audio, ids.ambilight_audio_ac),
+            self.api.AMBILIGHT_MENU_LOUNGE_LIGHT: (ids.ambilight_lounge, ids.ambilight_lounge_ac)
+        }
         try:
-            self.api.set_current_setting(2131230858, {'selected_item': widget.enum_id})
+            settings = self.api.get_settings(
+                self.api.AMBILIGHT_STYLE, self.api.AMBILIGHT_OFF, self.api.AMBILIGHT_LIGHTNESS, self.api.AMBILIGHT_SATURATION,
+                *nodes.keys()
+            )
+            current_node = settings[self.api.AMBILIGHT_STYLE]['data']['activenode_id']
+            for node in nodes:
+                value = settings[node]
+                widget = nodes[node][0]
+                data = value['data']
+                items = {item['enum_id']: item['string_id'] for item in data['enum_values']}
+                # Add some unofficial audio styles
+                if node == self.api.AMBILIGHT_MENU_FOLLOW_AUDIO:
+                    items.update({
+                        102: 'org.droidtv.ui.strings.R.string.MAIN_FOLLOW_AUDIO_STYLE_2',
+                        106: 'org.droidtv.ui.strings.R.string.MAIN_FOLLOW_AUDIO_STYLE_5',
+                        105: 'org.droidtv.ui.strings.R.string.MAIN_FOLLOW_AUDIO_STYLE_4'
+                    })
+                selected_item = data['selected_item']
+                translations = self.api.get_strings(S('_country'), S('_lang'), items.values())
+                widget.data = [{
+                    'text': translations[string_id],
+                    'group': 'ambilight',
+                    'settings': {
+                        self.api.AMBILIGHT_STYLE: {
+                            'activenode_id': node
+                        },
+                        node: {
+                            'selected_item': enum_id
+                        }
+                    },
+                    'state': 'down' if enum_id == selected_item and node == current_node else 'normal',
+                    'allow_no_selection': False,
+                } for enum_id, string_id in items.items()]
+            if current_node == self.api.AMBILIGHT_MENU_OFF and settings[self.api.AMBILIGHT_OFF]['data']['value']:
+                ids.ambilight_off.state = 'down'
+            elif current_node in nodes:
+                nodes[current_node][1].collapse = False
+
+            ids.ambilight_lightness.value = settings[self.api.AMBILIGHT_LIGHTNESS]['data']['value']
+            ids.ambilight_saturation.value = settings[self.api.AMBILIGHT_SATURATION]['data']['value']
+
         except Exception as err:
             toast(S(err), 4.0)
+
+    def on_ambilight_lightness(self, widget, value):
+        self.api.update_setting(self.api.AMBILIGHT_LIGHTNESS, {'value': value})
+
+    def on_ambilight_saturation(self, widget, value):
+        self.api.update_setting(self.api.AMBILIGHT_SATURATION, {'value': value})
+
+    def on_ambilight_color(self):
+        if self._ambilight_topology is None:
+            self._ambilight_topology = self.api.get_ambilight_topology()
+        r, g, b = self.root.ids.ambilight_color.color[:3]
+        color = dict(r=int(round(255 * r)), g=int(round(255 * g)), b=int(round(255 * b)))
+        values = {
+            side: {str(n): color
+                   for n in range(self._ambilight_topology[side])}
+            for side in ('left', 'top', 'right', 'bottom')
+        }
+        self.api.set_ambilight_expert(self._ambilight_topology['layers'], **values)
+        for tb in ToggleButton.get_widgets('ambilight'):
+            tb.state = 'normal'
 
     def fill_applications(self, widget):
         data = []

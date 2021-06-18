@@ -2,6 +2,30 @@
 #:import LongPressButton philipstv.gui.widgets.buttons
 #:import RepeatButton philipstv.gui.widgets.buttons
 
+
+[AccordionItemTitle@Label]:
+    text: ctx.title
+    normal_background: ctx.item.background_disabled_normal
+    disabled_background: ctx.item.background_disabled_normal
+    canvas.before:
+        Color:
+            rgba: self.disabled_color if self.disabled else self.color
+        BorderImage:
+            source: self.disabled_background if self.disabled else self.normal_background
+            pos: self.pos
+            size: self.size
+        PushMatrix
+        Translate:
+            xy: self.center_x, self.center_y
+        Rotate:
+            angle: 90 if ctx.item.orientation == 'horizontal' else 0
+            axis: 0, 0, 1
+        Translate:
+            xy: -self.center_x, -self.center_y
+    canvas.after:
+        PopMatrix
+
+
 <ApplicationButton>:
     on_release: app.root.current = 'remote'
 
@@ -36,10 +60,8 @@
 
 
 <SettingPairButton>:
-    # text_size: self.width - 32, None
     size_hint_y: None
     height: max(dp(20), self.texture_size[1] + dp(32))
-    # font_size: '15sp'
 
 
 ScreenManager:
@@ -62,7 +84,6 @@ ScreenManager:
                     font_name: 'philipstv/gui/data/FontAwesome.ttf'
                     font_size: '32dp'
                     text: '\uf0eb'
-                    disabled: True
                     on_release:
                         root.current = 'ambilight'
                 Button:
@@ -216,11 +237,99 @@ ScreenManager:
         name: 'ambilight'
         on_pre_enter:
             root.transition.direction = 'right'
+            app.fill_ambilight()
+            ambilight_lightness.bind(value=app.on_ambilight_lightness)
+            ambilight_saturation.bind(value=app.on_ambilight_saturation)
         on_pre_leave:
             root.transition.direction = 'left'
+            ambilight_lightness.unbind(value=app.on_ambilight_lightness)
+            ambilight_saturation.unbind(value=app.on_ambilight_saturation)
         BoxLayout:
             orientation: 'vertical'
-            Widget:
+            ControlButton:
+                id: ambilight_off
+                text: S('Ambilight Off')
+                group: 'ambilight'
+                allow_no_selection: False
+                size_hint: 1, None
+                settings: { 2131230766: { "activenode_id": 2131230767 }, 2131230783: { "value": True } }
+            Accordion:
+                orientation: 'vertical'
+                # title_template: 'AmbilightAccordionItemTitle'
+                AccordionItem:
+                    title: S('Follow Video')
+                    id: ambilight_video_ac
+                    RecycleView:
+                        id: ambilight_video
+                        viewclass: 'ControlButton'
+                        RecycleBoxLayout:
+                            # padding: 0, "5dp", 0, "5dp"
+                            orientation: 'vertical'
+                            default_size_hint: 1, None
+                            size_hint_y: None
+                            height: self.minimum_height
+                            row_default_height: 60
+                AccordionItem:
+                    title: S('Follow Audio')
+                    id: ambilight_audio_ac
+                    RecycleView:
+                        id: ambilight_audio
+                        viewclass: 'ControlButton'
+                        RecycleBoxLayout:
+                            # padding: 0, "5dp", 0, "5dp"
+                            orientation: 'vertical'
+                            default_size_hint: 1, None
+                            size_hint_y: None
+                            height: self.minimum_height
+                            row_default_height: 60
+                AccordionItem:
+                    title: S('Lounge Light')
+                    id: ambilight_lounge_ac
+                    RecycleView:
+                        id: ambilight_lounge
+                        viewclass: 'ControlButton'
+                        RecycleBoxLayout:
+                            # padding: 0, "5dp", 0, "5dp"
+                            orientation: 'vertical'
+                            default_size_hint: 1, None
+                            size_hint_y: None
+                            height: self.minimum_height
+                            row_default_height: 60
+                AccordionItem:
+                    title: S('Advanced')
+                    BoxLayout:
+                        orientation: 'vertical'
+                        Label:
+                            text: S('Lightness')
+                            size_hint_y: None
+                            # height: self.minimum_height
+                        Slider:
+                            id: ambilight_lightness
+                            min: 0
+                            max: 10
+                            step: 1
+                            orientation: 'horizontal'
+                            size_hint_y: None
+                            # height: self.minimum_height
+                            row_default_height: 60
+                        Label:
+                            text: S('Saturation')
+                            size_hint_y: None
+                            # height: self.minimum_height
+                        Slider:
+                            id: ambilight_saturation
+                            min: -2
+                            max: 2
+                            step: 1
+                            orientation: 'horizontal'
+                            size_hint_y: None
+                            # height: self.minimum_height
+                            row_default_height: 60
+                        ColorWheel:
+                            id: ambilight_color
+                            on_color:
+                                app.on_ambilight_color()
+                        # Widget:
             Button:
                 text: S('Back')
                 size_hint: 1, None
@@ -238,10 +347,13 @@ ScreenManager:
             orientation: 'vertical'
             RecycleView:
                 id: display_modes
-                viewclass: 'DisplayModeButton'
+                viewclass: 'ControlButton'
                 RecycleBoxLayout:
-                    default_size_hint: 1, 1
                     orientation: 'vertical'
+                    default_size_hint: 1, None
+                    size_hint_y: None
+                    height: self.minimum_height
+                    row_default_height: 60
             Label:
                 size_hint_y: None
             Button:
@@ -264,7 +376,7 @@ ScreenManager:
                 text: S('Back')
                 size_hint: 1, None
                 on_release:
-                    root.current = 'remote'
+                    app.close_settings()
 
     Screen:
         name: 'apps'
