@@ -37,7 +37,7 @@ class LongPressButton(Factory.Button):
         self.__long_fired = True
         self.dispatch('on_long_press')
 
-    def on_long_press(self, *largs):
+    def on_long_press(self, *args):
         pass
 
 

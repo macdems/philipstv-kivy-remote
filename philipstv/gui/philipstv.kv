@@ -201,6 +201,7 @@ ScreenManager:
                     on_release: app.keypress('Next')
                     on_long_press: app.keypress('Previous')
                 RepeatButton:
+                    id: volumedown
                     font_name: 'philipstv/gui/data/FontAwesome.ttf'
                     font_size: '24dp'
                     text: '\uf027'
@@ -214,6 +215,7 @@ ScreenManager:
                     background_color: 1.2, 1.2, 1.2, 1
                     on_release: app.keypress('Mute')
                 RepeatButton:
+                    id: volumeup
                     font_name: 'philipstv/gui/data/FontAwesome.ttf'
                     font_size: '24dp'
                     text: '\uf028'

@@ -76,7 +76,7 @@ class PhilipsTVApp(App):
         self.api.mac = self.config.get('philipstv', 'mac')
         self.api.user = self.config.get('philipstv', 'user')
         self.api.passwd = self.config.get('philipstv', 'passwd')
-        Window.bind(on_keyboard=self.on_keyboard_back)
+        Window.bind(on_keyboard=self.on_key_press_back, on_key_down=self.on_key_down_vol, on_key_up=self.on_key_up_vol)
         self.clean_hello()
 
     def clean_hello(self):
@@ -136,7 +136,7 @@ class PhilipsTVApp(App):
         self.root.current = 'settings'
         return True
 
-    def close_settings(self, *largs):
+    def close_settings(self, *args):
         if self.root.current == 'settings':
             self.root.current = 'remote'
             if self.set_mac():
@@ -146,7 +146,7 @@ class PhilipsTVApp(App):
                 self.destroy_settings()
             return True
 
-    def set_mac(self, *largs):
+    def set_mac(self, *args):
         if not self.api.mac:
             try:
                 self.config.set('philipstv', 'mac', self.api.set_mac())
@@ -165,11 +165,33 @@ class PhilipsTVApp(App):
         if key == 'mac':
             self.api.mac = value
 
-    def on_keyboard_back(self, window, key, *largs):
+    def on_key_press_back(self, window, key, *args):
         if key == 27:
             if self.root.current != 'remote':
                 self.root.current = 'remote'
                 return True
+
+    def on_key_down_vol(self, window, key, *args):
+        if key == 1073741952:
+            self.root.ids.volumeup.state = 'down'
+            self.root.ids.volumeup.dispatch('on_press')
+        elif key == 1073741953:
+            self.root.ids.volumedown.state = 'down'
+            self.root.ids.volumedown.dispatch('on_press')
+        else:
+            return False
+        return True
+
+    def on_key_up_vol(self, window, key, *args):
+        if key == 1073741952:
+            self.root.ids.volumeup.state = 'normal'
+            self.root.ids.volumeup.dispatch('on_release')
+        elif key == 1073741953:
+            self.root.ids.volumedown.state = 'normal'
+            self.root.ids.volumedown.dispatch('on_release')
+        else:
+            return False
+        return True
 
     def pair(self):
         try:

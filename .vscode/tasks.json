@@ -26,12 +26,14 @@
         {
             "label": "Deploy",
             "type": "shell",
-            "command": "buildozer android deploy"
+            "command": "buildozer android deploy",
+            "problemMatcher": []
         },
         {
             "label": "Follow Logs",
             "type": "shell",
-            "command": "adb logcat | grep python"
+            "command": "adb logcat | grep python",
+            "problemMatcher": []
         }
     ]
 }
