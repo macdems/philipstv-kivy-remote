@@ -81,77 +81,77 @@ ScreenManager:
                 size_hint_y: 12
                 cols: 3
                 Button:
-                    font_name: 'philipstv/gui/data/FontAwesome.ttf'
+                    font_name: 'FontAwesome'
                     font_size: '32dp'
                     text: '\uf0eb'
                     on_release:
                         root.current = 'ambilight'
                 Button:
-                    font_name: 'philipstv/gui/data/FontAwesome.ttf'
+                    font_name: 'FontAwesome'
                     font_size: '32dp'
                     text: '\uf011'
                     # background_color: 1.0, 0.8, 0.8
                     color: 1.0, 0.3, 0.3, 1
                     on_release: app.keypress('Standby')
                 Button:
-                    font_name: 'philipstv/gui/data/FontAwesome.ttf'
+                    font_name: 'FontAwesome'
                     font_size: '32dp'
                     text: '\uf042'
                     on_release:
                         root.current = 'display'
                 LongPressButton:
-                    font_name: 'philipstv/gui/data/FontAwesome.ttf'
+                    font_name: 'FontAwesome'
                     font_size: '32dp'
                     text: '\uf067'
                     on_release: app.keypress('Options')
                     on_long_press: app.keypress('Adjust')
                 RepeatButton:
-                    font_name: 'philipstv/gui/data/FontAwesome.ttf'
+                    font_name: 'FontAwesome'
                     font_size: '32dp'
                     text: '\uf0aa'
                     # background_color: 1.2, 1.2, 1.2
                     on_release: app.keypress('CursorUp')
                 LongPressButton:
                     id: src
-                    font_name: 'philipstv/gui/data/FontAwesome.ttf'
+                    font_name: 'FontAwesome'
                     font_size: '32dp'
                     text: '\uf2f6'
                     on_release: app.keypress('Source')
                     on_long_press:
                         app.open_settings()
                 RepeatButton:
-                    font_name: 'philipstv/gui/data/FontAwesome.ttf'
+                    font_name: 'FontAwesome'
                     font_size: '32dp'
                     text: '\uf0a8'
                     # background_color: 1.2, 1.2, 1.2
                     on_release: app.keypress('CursorLeft')
                 Button:
-                    font_name: 'philipstv/gui/data/FontAwesome.ttf'
+                    font_name: 'FontAwesome'
                     font_size: '32dp'
                     text: '\uf058'
                     # background_color: 1.2, 1.2, 1.2
                     on_release: app.keypress('Confirm')
                     #on_long_press: app.keypress('Options')
                 RepeatButton:
-                    font_name: 'philipstv/gui/data/FontAwesome.ttf'
+                    font_name: 'FontAwesome'
                     font_size: '32dp'
                     text: '\uf0a9'
                     # background_color: 1.2, 1.2, 1.2
                     on_release: app.keypress('CursorRight')
                 Button:
-                    font_name: 'philipstv/gui/data/FontAwesome.ttf'
+                    font_name: 'FontAwesome'
                     font_size: '32dp'
                     # text: '\uf2ea'
                     text: '\uf30a'
                     on_release: app.keypress('Back')
                 RepeatButton:
-                    font_name: 'philipstv/gui/data/FontAwesome.ttf'
+                    font_name: 'FontAwesome'
                     font_size: '32dp'
                     text: '\uf0ab'
                     # background_color: 1.2, 1.2, 1.2
                     on_release: app.keypress('CursorDown')
                 Button:
-                    font_name: 'philipstv/gui/data/FontAwesome.ttf'
+                    font_name: 'FontAwesome'
                     font_size: '32dp'
                     text: '\uf015'
                     on_release: app.keypress('Home')
@@ -174,49 +174,49 @@ ScreenManager:
                 size_hint_y: 4
                 cols: 3
                 RepeatButton:
-                    font_name: 'philipstv/gui/data/FontAwesome.ttf'
+                    font_name: 'FontAwesome'
                     text: '\uf04a'
                     on_release: app.keypress('Rewind')
                     initial_delay: 0.2
                 Button:
-                    font_name: 'philipstv/gui/data/FontAwesome.ttf'
+                    font_name: 'FontAwesome'
                     text: '\uf04b'
                     on_release: app.keypress('Play')
                 RepeatButton:
-                    font_name: 'philipstv/gui/data/FontAwesome.ttf'
+                    font_name: 'FontAwesome'
                     text: '\uf04e'
                     on_release: app.keypress('FastForward')
                     initial_delay: 0.2
                 Button:
-                    font_name: 'philipstv/gui/data/FontAwesome.ttf'
+                    font_name: 'FontAwesome'
                     text: '\uf04d'
                     on_release: app.keypress('Stop')
                 Button:
-                    font_name: 'philipstv/gui/data/FontAwesome.ttf'
+                    font_name: 'FontAwesome'
                     text: '\uf04c'
                     on_release: app.keypress('Pause')
                 LongPressButton:
-                    font_name: 'philipstv/gui/data/FontAwesome.ttf'
+                    font_name: 'FontAwesome'
                     text: '\uf051'
                     on_release: app.keypress('Next')
                     on_long_press: app.keypress('Previous')
                 RepeatButton:
                     id: volumedown
-                    font_name: 'philipstv/gui/data/FontAwesome.ttf'
+                    font_name: 'FontAwesome'
                     font_size: '24dp'
                     text: '\uf027'
                     background_color: 1.2, 1.2, 1.2, 1
                     on_release: app.keypress('VolumeDown')
                     initial_delay: 0.2
                 Button:
-                    font_name: 'philipstv/gui/data/FontAwesome.ttf'
+                    font_name: 'FontAwesome'
                     font_size: '24dp'
                     text: '\uf6a9'
                     background_color: 1.2, 1.2, 1.2, 1
                     on_release: app.keypress('Mute')
                 RepeatButton:
                     id: volumeup
-                    font_name: 'philipstv/gui/data/FontAwesome.ttf'
+                    font_name: 'FontAwesome'
                     font_size: '24dp'
                     text: '\uf028'
                     background_color: 1.2, 1.2, 1.2, 1

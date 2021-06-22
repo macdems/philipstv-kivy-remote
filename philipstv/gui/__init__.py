@@ -8,6 +8,7 @@ from kivy.app import App
 from kivy.core.window import Window
 from kivy.factory import Factory
 from kivy.properties import ObjectProperty
+from kivy.resources import resource_add_path
 from kivy.uix.settings import SettingString, SettingsWithNoMenu
 from kivy.uix.togglebutton import ToggleButton
 
@@ -18,6 +19,13 @@ from .resources import S
 from ..api import PhilipsAPI
 
 BASE_PATH = os.path.dirname(os.path.abspath(__file__))
+resource_add_path(os.path.join(BASE_PATH, 'data'))
+
+
+APP_ICONS = {
+    'app': '[font=FontAwesome]\uf108[/font]   ',
+    'game': '[font=FontAwesome]\uf11b[/font]   ',
+}
 
 if kivy.utils.platform != 'android':
     window_width = Window.size[0]
@@ -71,7 +79,7 @@ class PhilipsTVApp(App):
 
     def build(self):
         self.settings_cls = SettingsWithNoMenu
-        self.icon = os.path.join(BASE_PATH, 'data', 'icon.png')
+        self.icon = 'icon.png'
         self.api.host = self.config.get('philipstv', 'host')
         self.api.mac = self.config.get('philipstv', 'mac')
         self.api.user = self.config.get('philipstv', 'user')
@@ -321,7 +329,8 @@ class PhilipsTVApp(App):
             app_types = list(sorted(set(app['type'] for app in apps)))
             for app_type in app_types:
                 data += [{
-                    'text': app['label'],
+                    'text': APP_ICONS.get(app_type, '') + app['label'],
+                    'markup': True,
                     'package_name': app['intent']['component']['packageName'],
                     'class_name': app['intent']['component']['className'],
                     'action': app['intent']['action']
