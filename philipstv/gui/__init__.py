@@ -1,5 +1,4 @@
 import os
-import re
 
 # import asyncio
 
@@ -9,9 +8,10 @@ from kivy.core.window import Window
 from kivy.factory import Factory
 from kivy.properties import ObjectProperty
 from kivy.resources import resource_add_path
-from kivy.uix.settings import SettingString, SettingsWithNoMenu
+from kivy.uix.settings import SettingsWithNoMenu
 from kivy.uix.togglebutton import ToggleButton
 
+from .settings import SettingMac, SettingButton
 from .widgets.toast import toast
 
 from . import resources
@@ -47,22 +47,6 @@ class ControlButton(Factory.ToggleButton):
 class ApplicationButton(Factory.Button):
     def on_release(self):
         App.get_running_app().launch_application(self)
-
-
-class SettingMac(SettingString):
-    def _validate(self, instance):
-        self._dismiss()
-        value = self.textinput.text.strip().upper()
-        if value == '' or re.match("[0-9a-f]{2}([-:]?)[0-9A-F]{2}(\\1[0-9A-F]{2}){4}$", value):
-            self.value = value
-
-
-class SettingPairButton(Factory.Button):
-    def __init__(self, panel):
-        super().__init__(text=S("Pair"))
-
-    def on_release(self):
-        App.get_running_app().pair()
 
 
 class PhilipsTVApp(App):
@@ -129,13 +113,15 @@ class PhilipsTVApp(App):
                 "key": "mac"
             }},
             {{
-                "type": "pair_button"
+                "type": "pair_button",
+                "method": "pair",
+                "text": "{S('Pair')}"
             }}
         ]
         """
-        settings.register_type('pair_button', SettingPairButton)
+        settings.register_type('pair_button', SettingButton)
         settings.register_type('mac_address', SettingMac)
-        settings.add_json_panel(S('Settins'), self.config, data=connection)
+        settings.add_json_panel(S('Settings'), self.config, data=connection)
 
     def display_settings(self, settings):
         panel = self.root.ids.settings
