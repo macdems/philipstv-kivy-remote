@@ -40,7 +40,7 @@ class ControlButton(Factory.ToggleButton):
             for node, data in self.settings.items():
                 api.update_setting(node, data)
         except Exception as err:
-            App.get_running_app().toast(S(err), 4.0)
+            toast(S(err), 4.0)
 
 
 class ApplicationButton(Factory.Button):
@@ -285,29 +285,37 @@ class PhilipsTVApp(App):
 
             ids.ambilight_lightness.value = settings[self.api.AMBILIGHT_LIGHTNESS]['data']['value']
             ids.ambilight_saturation.value = settings[self.api.AMBILIGHT_SATURATION]['data']['value']
-
         except Exception as err:
             toast(S(err), 4.0)
 
     def on_ambilight_lightness(self, widget, value):
-        self.api.update_setting(self.api.AMBILIGHT_LIGHTNESS, {'value': value})
+        try:
+            self.api.update_setting(self.api.AMBILIGHT_LIGHTNESS, {'value': value})
+        except Exception as err:
+            toast(S(err), 4.0)
 
     def on_ambilight_saturation(self, widget, value):
-        self.api.update_setting(self.api.AMBILIGHT_SATURATION, {'value': value})
+        try:
+            self.api.update_setting(self.api.AMBILIGHT_SATURATION, {'value': value})
+        except Exception as err:
+            toast(S(err), 4.0)
 
     def on_ambilight_color(self):
-        if self._ambilight_topology is None:
-            self._ambilight_topology = self.api.get_ambilight_topology()
-        r, g, b = self.root.ids.ambilight_color.color[:3]
-        color = dict(r=int(round(255 * r)), g=int(round(255 * g)), b=int(round(255 * b)))
-        values = {
-            side: {str(n): color
-                   for n in range(self._ambilight_topology[side])}
-            for side in ('left', 'top', 'right', 'bottom')
-        }
-        self.api.set_ambilight_expert(self._ambilight_topology['layers'], **values)
-        for tb in ToggleButton.get_widgets('ambilight'):
-            tb.state = 'normal'
+        try:
+            if self._ambilight_topology is None:
+                self._ambilight_topology = self.api.get_ambilight_topology()
+            r, g, b = self.root.ids.ambilight_color.color[:3]
+            color = dict(r=int(round(255 * r)), g=int(round(255 * g)), b=int(round(255 * b)))
+            values = {
+                side: {str(n): color
+                    for n in range(self._ambilight_topology[side])}
+                for side in ('left', 'top', 'right', 'bottom')
+            }
+            self.api.set_ambilight_expert(self._ambilight_topology['layers'], **values)
+            for tb in ToggleButton.get_widgets('ambilight'):
+                tb.state = 'normal'
+        except Exception as err:
+            toast(S(err), 4.0)
 
     def fill_applications(self, widget):
         data = []

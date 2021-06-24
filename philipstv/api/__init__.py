@@ -159,7 +159,10 @@ class PhilipsAPI:
                 raise NotRechable() from err
             else:
                 if resp.status_code == 200:
-                    return resp.json()
+                    try:
+                        return resp.json()
+                    except ValueError:
+                        return resp.text
                 elif resp.status_code == 401:
                     raise NotAuthorized()
                 raise ApiError(response=resp)
