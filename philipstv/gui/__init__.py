@@ -21,7 +21,6 @@ from ..api import PhilipsAPI
 BASE_PATH = os.path.dirname(os.path.abspath(__file__))
 resource_add_path(os.path.join(BASE_PATH, 'data'))
 
-
 APP_ICONS = {
     'app': '[font=FontAwesome]\uf108[/font]   ',
     'game': '[font=FontAwesome]\uf11b[/font]   ',
@@ -220,7 +219,9 @@ class PhilipsTVApp(App):
         try:
             items = self.api.get_settings(self.api.PICTURE_STYLE)[self.api.PICTURE_STYLE]['data']
             selected_item = items['selected_item']
-            translations = self.api.get_strings(S('_country'), S('_lang'), [i['string_id'] for i in items['enum_values']])
+            translations = self.api.get_strings(
+                *(i['string_id'] for i in items['enum_values']), country=S('_country'), lang=S('_lang')
+            )
             widget.data = [{
                 'text': translations.get(item['string_id'], item['string_id']),
                 'group': 'display_modes',
@@ -262,7 +263,7 @@ class PhilipsTVApp(App):
                         105: 'org.droidtv.ui.strings.R.string.MAIN_FOLLOW_AUDIO_STYLE_4'
                     })
                 selected_item = data['selected_item']
-                translations = self.api.get_strings(S('_country'), S('_lang'), items.values())
+                translations = self.api.get_strings(*items.values(), country=S('_country'), lang=S('_lang'))
                 widget.data = [{
                     'text': translations[string_id],
                     'group': 'ambilight',

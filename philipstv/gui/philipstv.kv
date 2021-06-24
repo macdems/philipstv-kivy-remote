@@ -35,7 +35,7 @@
     title: 'Enter PIN displayed on your TV'
     title_align: 'center'
     size_hint: 1, None
-    height: '148dp'
+    height: '148sp'
     auto_dismiss: False
     BoxLayout:
         orientation: 'vertical'
@@ -46,12 +46,12 @@
             hint_text:'0000'
             input_filter:'int'
             size_hint: 1, None
-            height: '32dp'
+            height: '32sp'
             halign: 'center'
-            font_size: '24dp'
+            font_size: '24sp'
         Widget:
             size_hint: 1, None
-            height: '8dp'
+            height: '8sp'
         Button:
             text: S('OK')
             size_hint: 1, None
@@ -61,7 +61,7 @@
 
 <SettingButton>:
     size_hint_y: None
-    height: max(dp(20), self.texture_size[1] + dp(32))
+    height: max(sp(20), self.texture_size[1] + sp(32))
 
 
 ScreenManager:
@@ -82,77 +82,77 @@ ScreenManager:
                 cols: 3
                 Button:
                     font_name: 'FontAwesome'
-                    font_size: '32dp'
+                    font_size: '32sp'
                     text: '\uf0eb'
                     on_release:
                         root.current = 'ambilight'
                 Button:
                     font_name: 'FontAwesome'
-                    font_size: '32dp'
+                    font_size: '32sp'
                     text: '\uf011'
                     # background_color: 1.0, 0.8, 0.8
                     color: 1.0, 0.3, 0.3, 1
                     on_release: app.keypress('Standby')
                 Button:
                     font_name: 'FontAwesome'
-                    font_size: '32dp'
+                    font_size: '32sp'
                     text: '\uf042'
                     on_release:
                         root.current = 'display'
                 LongPressButton:
                     font_name: 'FontAwesome'
-                    font_size: '32dp'
+                    font_size: '32sp'
                     text: '\uf067'
                     on_release: app.keypress('Options')
                     on_long_press: app.keypress('Adjust')
                 RepeatButton:
                     font_name: 'FontAwesome'
-                    font_size: '32dp'
+                    font_size: '32sp'
                     text: '\uf0aa'
                     # background_color: 1.2, 1.2, 1.2
                     on_release: app.keypress('CursorUp')
                 LongPressButton:
                     id: src
                     font_name: 'FontAwesome'
-                    font_size: '32dp'
+                    font_size: '32sp'
                     text: '\uf2f6'
                     on_release: app.keypress('Source')
                     on_long_press:
                         app.open_settings()
                 RepeatButton:
                     font_name: 'FontAwesome'
-                    font_size: '32dp'
+                    font_size: '32sp'
                     text: '\uf0a8'
                     # background_color: 1.2, 1.2, 1.2
                     on_release: app.keypress('CursorLeft')
                 Button:
                     font_name: 'FontAwesome'
-                    font_size: '32dp'
+                    font_size: '32sp'
                     text: '\uf058'
                     # background_color: 1.2, 1.2, 1.2
                     on_release: app.keypress('Confirm')
                     #on_long_press: app.keypress('Options')
                 RepeatButton:
                     font_name: 'FontAwesome'
-                    font_size: '32dp'
+                    font_size: '32sp'
                     text: '\uf0a9'
                     # background_color: 1.2, 1.2, 1.2
                     on_release: app.keypress('CursorRight')
                 Button:
                     font_name: 'FontAwesome'
-                    font_size: '32dp'
+                    font_size: '32sp'
                     # text: '\uf2ea'
                     text: '\uf30a'
                     on_release: app.keypress('Back')
                 RepeatButton:
                     font_name: 'FontAwesome'
-                    font_size: '32dp'
+                    font_size: '32sp'
                     text: '\uf0ab'
                     # background_color: 1.2, 1.2, 1.2
                     on_release: app.keypress('CursorDown')
                 Button:
                     font_name: 'FontAwesome'
-                    font_size: '32dp'
+                    font_size: '32sp'
                     text: '\uf015'
                     on_release: app.keypress('Home')
             BoxLayout:
@@ -203,21 +203,21 @@ ScreenManager:
                 RepeatButton:
                     id: volumedown
                     font_name: 'FontAwesome'
-                    font_size: '24dp'
+                    font_size: '24sp'
                     text: '\uf027'
                     background_color: 1.2, 1.2, 1.2, 1
                     on_release: app.keypress('VolumeDown')
                     initial_delay: 0.2
                 Button:
                     font_name: 'FontAwesome'
-                    font_size: '24dp'
+                    font_size: '24sp'
                     text: '\uf6a9'
                     background_color: 1.2, 1.2, 1.2, 1
                     on_release: app.keypress('Mute')
                 RepeatButton:
                     id: volumeup
                     font_name: 'FontAwesome'
-                    font_size: '24dp'
+                    font_size: '24sp'
                     text: '\uf028'
                     background_color: 1.2, 1.2, 1.2, 1
                     on_release: app.keypress('VolumeUp')
@@ -265,7 +265,7 @@ ScreenManager:
                         id: ambilight_video
                         viewclass: 'ControlButton'
                         RecycleBoxLayout:
-                            # padding: 0, "5dp", 0, "5dp"
+                            # padding: 0, "5sp", 0, "5sp"
                             orientation: 'vertical'
                             default_size_hint: 1, None
                             size_hint_y: None
@@ -278,7 +278,7 @@ ScreenManager:
                         id: ambilight_audio
                         viewclass: 'ControlButton'
                         RecycleBoxLayout:
-                            # padding: 0, "5dp", 0, "5dp"
+                            # padding: 0, "5sp", 0, "5sp"
                             orientation: 'vertical'
                             default_size_hint: 1, None
                             size_hint_y: None
@@ -291,7 +291,7 @@ ScreenManager:
                         id: ambilight_lounge
                         viewclass: 'ControlButton'
                         RecycleBoxLayout:
-                            # padding: 0, "5dp", 0, "5dp"
+                            # padding: 0, "5sp", 0, "5sp"
                             orientation: 'vertical'
                             default_size_hint: 1, None
                             size_hint_y: None
