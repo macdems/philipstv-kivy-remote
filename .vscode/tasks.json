@@ -14,6 +14,16 @@
             }
         },
         {
+            "label": "Build Debug (x86)",
+            "type": "shell",
+            "command": "buildozer --profile x86 android debug",
+            "problemMatcher": [],
+            "group": {
+                "kind": "build",
+                "isDefault": true
+            }
+        },
+        {
             "label": "Build Release",
             "type": "shell",
             "command": "P4A_RELEASE_KEYSTORE_PASSWD=$(secret-tool lookup keystore $P4A_RELEASE_KEYSTORE) P4A_RELEASE_KEYALIAS_PASSWD=$(secret-tool lookup keystore $P4A_RELEASE_KEYSTORE alias $P4A_RELEASE_KEYALIAS) buildozer android release",
@@ -24,7 +34,7 @@
             }
         },
         {
-            "label": "Build Release (ARM64)",
+            "label": "Build Release (arm64)",
             "type": "shell",
             "command": "P4A_RELEASE_KEYSTORE_PASSWD=$(secret-tool lookup keystore $P4A_RELEASE_KEYSTORE) P4A_RELEASE_KEYALIAS_PASSWD=$(secret-tool lookup keystore $P4A_RELEASE_KEYSTORE alias $P4A_RELEASE_KEYALIAS) buildozer --profile arm64 android release",
             "problemMatcher": [],
@@ -37,6 +47,12 @@
             "label": "Deploy",
             "type": "shell",
             "command": "buildozer android deploy",
+            "problemMatcher": []
+        },
+        {
+            "label": "Deploy & Run (x86)",
+            "type": "shell",
+            "command": "buildozer --profile x86 android deploy run",
             "problemMatcher": []
         },
         {
