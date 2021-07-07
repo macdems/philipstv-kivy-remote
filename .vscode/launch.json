@@ -6,6 +6,13 @@
             "request": "launch",
             "program": "main.py",
             "justMyCode": false
+        },
+        {
+            "name": "Discover Test",
+            "type": "python",
+            "request": "launch",
+            "program": "philipstv/api/discover.py",
+            "console": "integratedTerminal"
         }
     ]
 }

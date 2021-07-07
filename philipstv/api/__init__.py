@@ -284,6 +284,14 @@ class PhilipsAPI:
         """
         self.post('menuitems/settings/update', {'values': [{'value': {'Nodeid': node, 'data': data}}]})
 
+    def get_system(self):
+        """Get system info from your TV.TV
+
+        Returns:
+            dict: Dictionary with system info.
+        """
+        return self.get('system')
+
     def get_applications(self):
         """Get info on installed applications.
 

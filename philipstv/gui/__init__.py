@@ -5,18 +5,21 @@ import os
 import kivy.utils
 from kivy.app import App
 from kivy.core.window import Window
+from kivy.clock import mainthread
 from kivy.factory import Factory
-from kivy.properties import ObjectProperty
+from kivy.properties import ObjectProperty, StringProperty
 from kivy.resources import resource_add_path
 from kivy.uix.settings import SettingsWithNoMenu
 from kivy.uix.togglebutton import ToggleButton
+from kivy.uix.behaviors import ButtonBehavior
 
-from .settings import SettingMac, SettingButton
+from .settings import SettingMac, SettingButton, SettingHelp
 from .widgets.toast import toast
 
 from . import resources
 from .resources import S
-from ..api import PhilipsAPI
+from ..api import PhilipsAPI, NotAuthorized
+from ..api.discover import PhilipsTVDiscover
 
 BASE_PATH = os.path.dirname(os.path.abspath(__file__))
 resource_add_path(os.path.join(BASE_PATH, 'data'))
@@ -29,6 +32,29 @@ APP_ICONS = {
 if kivy.utils.platform != 'android':
     window_width = Window.size[0]
     Window.size = window_width, 2 * window_width
+
+
+class DiscoverButton(Factory.Button):
+    host = StringProperty()
+
+    def on_release(self):
+        app = App.get_running_app()
+        app.api.host = str(self.host)
+        app.api.mac = None
+        try:
+            app.config.set('philipstv', 'host', app.api.host)
+            app.config.set('philipstv', 'mac', '')
+            app.config.write()
+            app.setup_auth()
+            app.root.current = 'remote'
+            try:
+                app.api.get_applications()
+            except NotAuthorized:
+                app.pair(app.set_mac)
+            else:
+                app.set_mac()
+        except Exception as err:
+            toast(S(err), 4.0)
 
 
 class ControlButton(Factory.ToggleButton):
@@ -54,7 +80,9 @@ class PhilipsTVApp(App):
     def __init__(self):
         super().__init__()
         self.api = PhilipsAPI()
+        self.auth = {}
         self._ambilight_topology = None
+        self._discover = None
 
     def load_kv(self, filename=None):
         resources.LANG = self.config.get('interface', 'lang')
@@ -65,17 +93,77 @@ class PhilipsTVApp(App):
         self.icon = 'icon.png'
         self.api.host = self.config.get('philipstv', 'host')
         self.api.mac = self.config.get('philipstv', 'mac')
-        self.api.user = self.config.get('philipstv', 'user')
-        self.api.passwd = self.config.get('philipstv', 'passwd')
+
+        auth = self.config.get('philipstv', 'auth')
+        if auth:
+            try:
+                self.auth = {v[0]: (v[1], v[2]) for v in (a.split(':') for a in auth.split(','))}
+            except IndexError:
+                pass
+        else:
+            user = self.config.get('philipstv', 'user', fallback=None)
+            passwd = self.config.get('philipstv', 'passwd', fallback=None)
+            if user is not None:
+                self.config.remove_option('philipstv', 'user')
+            if passwd is not None:
+                self.config.remove_option('philipstv', 'passwd')
+            self.save_auth(user, passwd)
+        self.setup_auth()
+
         Window.bind(on_keyboard=self.on_key_press_back, on_key_down=self.on_key_down_vol, on_key_up=self.on_key_up_vol)
         self.clean_hello()
 
     def clean_hello(self):
         if self.api.host:
-            self.root.ids.remote.remove_widget(self.root.ids.hello)
+            try:
+                self.root.ids.remote.remove_widget(self.root.ids.hello)
+            except:
+                pass
+
+
+    def start_discovery(self):
+        if self._discover is None:
+            self._discover = PhilipsTVDiscover(self._discover_add, self._discover_remove)
+        self._discover.start()
+
+    def stop_discovery(self):
+        self._discover.stop()
+
+    @mainthread
+    def _discover_add(self, name, host):
+        item = {'text': name, 'host': host}
+        container = self.root.ids.discovered
+        items = list(container.data)
+        if item not in items:
+            items.append(item)
+            container.data = items
+            container.refresh_from_data()
+
+    @mainthread
+    def _discover_remove(self, name, host):
+        item = {'text': name, 'host': host}
+        container = self.root.ids.discovered
+        items = list(container.data)
+        if item in items:
+            items.remove(item)
+            container.data = items
+            container.refresh_from_data()
+
+    def setup_auth(self):
+        self.api.user, self.api.passwd = self.auth.get(self.api.host, (None, None))
+
+
+    def save_auth(self, user=None, passwd=None):
+        if user is not None and passwd is not None:
+            self.auth[self.api.host] = user, passwd
+        elif self.api.user is not None and self.api.passwd is not None:
+            self.auth[self.api.host] = self.api.user, self.api.passwd
+        auth = ','.join(f"{k}:{v[0]}:{v[1]}" for (k,v) in self.auth.items())
+        self.config.set('philipstv', 'auth', auth)
+        self.config.write()
 
     def build_config(self, config):
-        config.setdefaults('philipstv', {'host': '', 'mac': '', 'user': '', 'passwd': ''})
+        config.setdefaults('philipstv', {'host': '', 'mac': '', 'auth': ''})
         config.setdefaults('interface', {'lang': 'English'})
 
     def build_settings(self, settings):
@@ -96,6 +184,10 @@ class PhilipsTVApp(App):
             {{
                 "type": "title",
                 "title": "{S('TV Connection')}"
+            }},
+            {{
+                "type": "help",
+                "help": "{S('_advanced_settings_help')}"
             }},
             {{
                 "type": "string",
@@ -120,6 +212,7 @@ class PhilipsTVApp(App):
         """
         settings.register_type('pair_button', SettingButton)
         settings.register_type('mac_address', SettingMac)
+        settings.register_type('help', SettingHelp)
         settings.add_json_panel(S('Settings'), self.config, data=connection)
 
     def display_settings(self, settings):
@@ -131,12 +224,12 @@ class PhilipsTVApp(App):
 
     def close_settings(self, *args):
         if self.root.current == 'settings':
-            self.root.current = 'remote'
-            if self.set_mac():
-                settings = self._app_settings
-                panel = self.root.ids.settings
-                panel.remove_widget(settings)
-                self.destroy_settings()
+            self.root.current = 'discover'
+            self.set_mac()
+            settings = self._app_settings
+            panel = self.root.ids.settings
+            panel.remove_widget(settings)
+            self.destroy_settings()
             return True
 
     def set_mac(self, *args):
@@ -186,7 +279,7 @@ class PhilipsTVApp(App):
             return False
         return True
 
-    def pair(self):
+    def pair(self, callback=None):
         try:
             data = self.api.pair_request()
         except Exception as err:
@@ -201,9 +294,9 @@ class PhilipsTVApp(App):
                 except Exception as err:
                     toast(S(err), 4.0)
                 else:
-                    self.config.set('philipstv', 'user', self.api.user)
-                    self.config.set('philipstv', 'passwd', self.api.passwd)
-                    self.config.write()
+                    self.save_auth()
+                    if callback is not None:
+                        callback()
 
             popup = Factory.PinPopup()
             popup.bind(on_dismiss=on_pin_entered)
@@ -308,7 +401,7 @@ class PhilipsTVApp(App):
             color = dict(r=int(round(255 * r)), g=int(round(255 * g)), b=int(round(255 * b)))
             values = {
                 side: {str(n): color
-                    for n in range(self._ambilight_topology[side])}
+                       for n in range(self._ambilight_topology[side])}
                 for side in ('left', 'top', 'right', 'bottom')
             }
             self.api.set_ambilight_expert(self._ambilight_topology['layers'], **values)

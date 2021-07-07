@@ -27,11 +27,13 @@ On desktop simply run `main.py`.
 
 ### Pairing your TV
 
-The program does not discover your TV automatically. You need to specify its IP manually.
+To pair the TV  hold the source button <img src="img/fa-sign-in-alt.svg" height="16dp" style="vertical-align: middle;"/> for
+2 seconds. The pairing window will appear and you should be able to select your TV from the list (make sure it is turned on).
 
-First, open settings on your TV and select `Wireless and Networks` > `Wired of Wi-Fi` > `View network settings`. Note the IP address
-of your TV.  Next, hold the source button <img src="img/fa-sign-in-alt.svg" height="16dp" style="vertical-align: middle;"/>
-for 2 seconds to open settings. Then enter the IP of the TV in the appropriate box and click **`Pair`** button to pair the app
+If the program does not discover your TV automatically, you need to specify its IP manually. First, open settings on your TV and
+select `Wireless and Networks` > `Wired of Wi-Fi` > `View network settings`. Note the IP address of your TV. Next, hold
+the source button <img src="img/fa-sign-in-alt.svg" height="16dp" style="vertical-align: middle;"/> for 2 seconds and click
+`Advanced...` to open settings. Then enter the IP of the TV in the appropriate box and click **`Pair`** button to pair the app
 with your TV.
 
 ### Usage
