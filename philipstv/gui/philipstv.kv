@@ -392,8 +392,9 @@ ScreenManager:
             app.start_discovery()
             root.transition.direction = 'right'
         on_pre_leave:
-            app.stop_discovery()
             app.clean_hello()
+        on_leave:
+            app.stop_discovery()
         BoxLayout:
             orientation: 'vertical'
             RecycleView:
