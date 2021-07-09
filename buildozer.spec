@@ -36,7 +36,7 @@ version.filename = %(source.dir)s/main.py
 
 # (list) Application requirements
 # comma separated e.g. requirements = sqlite3,kivy
-requirements = python3, kivy, requests, urllib3, chardet, idna, zeroconf
+requirements = python3, kivy==2.0.0, requests, urllib3, chardet, idna, zeroconf
 
 # (str) Custom source folders for requirements
 # Sets custom source for any requirements with recipes
@@ -82,7 +82,7 @@ fullscreen = 0
 # red, blue, green, black, white, gray, cyan, magenta, yellow, lightgray,
 # darkgray, grey, lightgrey, darkgrey, aqua, fuchsia, lime, maroon, navy,
 # olive, purple, silver, teal.
-#android.presplash_color = #FFFFFF
+android.presplash_color = #0e232e
 
 # (list) Permissions
 android.permissions = INTERNET
