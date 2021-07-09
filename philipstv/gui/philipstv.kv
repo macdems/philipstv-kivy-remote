@@ -1,5 +1,5 @@
 #:kivy 1.11.1
-#:import S philipstv.gui.resources.S
+#:import l philipstv.gui.lang.l
 #:import LongPressButton philipstv.gui.widgets.buttons
 #:import RepeatButton philipstv.gui.widgets.buttons
 
@@ -36,7 +36,7 @@
 
 <PinPopup@Popup>
     id: pin_popup
-    title: 'Enter PIN displayed on your TV'
+    title: l.tr('Enter PIN displayed on your TV')
     title_align: 'center'
     size_hint: 1, None
     height: '148sp'
@@ -57,7 +57,7 @@
             size_hint: 1, None
             height: '8sp'
         Button:
-            text: S('OK')
+            text: l.tr('OK')
             size_hint: 1, None
             on_release:
                 pin_popup.dismiss()
@@ -242,7 +242,7 @@ ScreenManager:
                     on_release: app.keypress('VolumeUp')
                     initial_delay: 0.2
             Button:
-                text: S('Applications')
+                text: l.tr('Applications')
                 on_release:
                     root.transition.direction = 'up'
                     root.current = 'apps'
@@ -269,7 +269,7 @@ ScreenManager:
             orientation: 'vertical'
             ControlButton:
                 id: ambilight_off
-                text: S('Ambilight Off')
+                text: l.tr('Ambilight Off')
                 group: 'ambilight'
                 allow_no_selection: False
                 size_hint: 1, None
@@ -278,7 +278,7 @@ ScreenManager:
                 orientation: 'vertical'
                 # title_template: 'AmbilightAccordionItemTitle'
                 AccordionItem:
-                    title: S('Follow Video')
+                    title: l.tr('Follow Video')
                     id: ambilight_video_ac
                     RecycleView:
                         id: ambilight_video
@@ -291,7 +291,7 @@ ScreenManager:
                             height: self.minimum_height
                             row_default_height: 60
                 AccordionItem:
-                    title: S('Follow Audio')
+                    title: l.tr('Follow Audio')
                     id: ambilight_audio_ac
                     RecycleView:
                         id: ambilight_audio
@@ -304,7 +304,7 @@ ScreenManager:
                             height: self.minimum_height
                             row_default_height: 60
                 AccordionItem:
-                    title: S('Lounge Light')
+                    title: l.tr('Lounge Light')
                     id: ambilight_lounge_ac
                     RecycleView:
                         id: ambilight_lounge
@@ -317,11 +317,11 @@ ScreenManager:
                             height: self.minimum_height
                             row_default_height: 60
                 AccordionItem:
-                    title: S('Advanced')
+                    title: l.tr('Advanced')
                     BoxLayout:
                         orientation: 'vertical'
                         Label:
-                            text: S('Lightness')
+                            text: l.tr('Lightness')
                             size_hint_y: None
                             # height: self.minimum_height
                         Slider:
@@ -334,7 +334,7 @@ ScreenManager:
                             # height: self.minimum_height
                             row_default_height: 60
                         Label:
-                            text: S('Saturation')
+                            text: l.tr('Saturation')
                             size_hint_y: None
                             # height: self.minimum_height
                         Slider:
@@ -352,7 +352,7 @@ ScreenManager:
                                 app.on_ambilight_color()
                         # Widget:
             Button:
-                text: S('Back')
+                text: l.tr('Back')
                 size_hint: 1, None
                 on_release:
                     root.current = 'remote'
@@ -378,7 +378,7 @@ ScreenManager:
             Label:
                 size_hint_y: None
             Button:
-                text: S('Back')
+                text: l.tr('Back')
                 size_hint: 1, None
                 on_release:
                     root.current = 'remote'
@@ -406,12 +406,12 @@ ScreenManager:
                     height: self.minimum_height
                     orientation: 'vertical'
             Button:
-                text: S('Advanced...')
+                text: l.tr('Advanced...')
                 size_hint: 1, None
                 on_release:
                     app.open_settings()
             Button:
-                text: S('Back')
+                text: l.tr('Back')
                 size_hint: 1, None
                 on_release:
                     root.current = 'remote'
@@ -433,7 +433,7 @@ ScreenManager:
             orientation: 'vertical'
             id: settings
             Button:
-                text: S('Back')
+                text: l.tr('Back')
                 size_hint: 1, None
                 on_release:
                     app.close_settings()
@@ -461,7 +461,7 @@ ScreenManager:
             Label:
                 size_hint_y: None
             Button:
-                text: S('Back')
+                text: l.tr('Back')
                 size_hint: 1, None
                 on_release:
                     root.current = 'remote'

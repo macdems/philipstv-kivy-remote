@@ -346,17 +346,22 @@ class PhilipsAPI:
             self.mac = device['mac']
             return self.mac
 
-    def get_strings(self, *ids, country='en_US', lang='en'):
+    def get_strings(self, *ids, country='en_US', lang=None):
         """Get translation strings from the TV.
 
         Args:
             ids (list[str]): String IDs.
             country (str, optional): Country code. Defaults to 'en_US'.
-            lang (str, optional): Language code. Defaults to 'en'.
+            lang (str, optional): Language code. By default determined from country code.
 
         Returns:
             dict: Dict with string IDs and retrieved translations.
         """
+        if lang is None:
+            try:
+                lang = country.split('_')[1]
+            except:
+                lang = 'en'
         data = {'locale': {'country': country, 'language': lang}, 'strings': [{'string_id': s} for s in ids]}
         return {res['string_id']: res['string_translation'] for res in self.post('strings', data)['translations']}
 

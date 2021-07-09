@@ -1,26 +1,13 @@
-LANG = 'English'
-
-
-def S(string):
-    string = str(string)
-    try:
-        return STRINGS.get(LANG, STRINGS['English'])[string]
-    except KeyError:
-        return STRINGS['English'].get(string, string)
-
-
 STRINGS = {
-    'English': {
-        '_country': 'en_US',
-        '_lang': 'en',
+    'en_US': {
+        '_display': 'English',
         '_advanced_settings_help':
             'First, open settings on your TV and select [b]Wireless and Networks[/b] > [b]Wired of Wi-Fi[/b] '
             '> [b]View network settings[/b]. Note the IP address of your TV. Next enter the IP of the TV below '
             '(you can leave MAC empty) and click [b]Pair[/b] button to pair the app with your TV.'
     },
-    'Polski': {
-        '_country': 'pl_PL',
-        '_lang': 'pl',
+    'pl_PL': {
+        '_display': "Polski",
         'Back': "Wstecz",
         'Applications': "Aplikacje",
         'Advanced...': "Zaawansowane...",
@@ -41,6 +28,7 @@ STRINGS = {
         'Advanced': "Zaawansowane",
         'Lightness': "Jasność",
         'Saturation': "Nasycenie",
+        'Enter PIN displayed on your TV': "Wprowadź kod PIN wyświetlony na ekranie telewizora",
 
         '_advanced_settings_help':
             'Otwórz ustawienia telewizora i wybierz [b]Wireless and Networks[/b] > [b]Wired of Wi-Fi[/b] '

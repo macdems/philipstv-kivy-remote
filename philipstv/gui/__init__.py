@@ -11,13 +11,13 @@ from kivy.properties import ObjectProperty, StringProperty
 from kivy.resources import resource_add_path
 from kivy.uix.settings import SettingsWithNoMenu
 from kivy.uix.togglebutton import ToggleButton
-from kivy.uix.behaviors import ButtonBehavior
+from kivy.uix.screenmanager import NoTransition
 
 from .settings import SettingMac, SettingButton, SettingHelp
 from .widgets.toast import toast
 
-from . import resources
-from .resources import S
+from .lang import l, DEFAULT as DEFAULT_LANG
+from .strings import STRINGS
 from ..api import PhilipsAPI, NotAuthorized
 from ..api.discover import PhilipsTVDiscover
 
@@ -29,7 +29,10 @@ APP_ICONS = {
     'game': '[font=FontAwesome]\uf11b[/font]   ',
 }
 
-if kivy.utils.platform != 'android':
+if kivy.utils.platform == 'android':
+    import jnius
+else:
+    jnius = None
     window_width = Window.size[0]
     Window.size = window_width, 2 * window_width
 
@@ -54,7 +57,7 @@ class DiscoverButton(Factory.Button):
             else:
                 app.set_mac()
         except Exception as err:
-            toast(S(err), 4.0)
+            toast(l.tr(err), 4.0)
 
 
 class ControlButton(Factory.ToggleButton):
@@ -66,7 +69,7 @@ class ControlButton(Factory.ToggleButton):
             for node, data in self.settings.items():
                 api.update_setting(node, data)
         except Exception as err:
-            toast(S(err), 4.0)
+            toast(l.tr(err), 4.0)
 
 
 class ApplicationButton(Factory.Button):
@@ -84,8 +87,23 @@ class PhilipsTVApp(App):
         self._ambilight_topology = None
         self._discover = None
 
+    def _get_lang(self):
+        lang =  self.config.get('interface', 'lang')
+        if lang == 'Auto':
+            if jnius is not None:
+                try:
+                    Locale = jnius.autoclass('java.util.Locale')
+                    return Locale.getDefault().toString()
+                except:
+                    return DEFAULT_LANG
+            else:
+                return os.environ.get('LANG', DEFAULT_LANG).split('.')[0]
+        else:
+            langs = {l['_display']: k for (k,l) in STRINGS.items()}
+            return langs.get(lang, DEFAULT_LANG)
+
     def load_kv(self, filename=None):
-        resources.LANG = self.config.get('interface', 'lang')
+        l.lang = self._get_lang()
         super().load_kv(filename)
 
     def build(self):
@@ -164,56 +182,58 @@ class PhilipsTVApp(App):
 
     def build_config(self, config):
         config.setdefaults('philipstv', {'host': '', 'mac': '', 'auth': ''})
-        config.setdefaults('interface', {'lang': 'English'})
+        config.setdefaults('interface', {'lang': 'Auto'})
 
     def build_settings(self, settings):
+        langs = ['Auto'] + [l['_display'] for l in STRINGS.values()]
+
         connection = f"""
         [
             {{
                 "type": "title",
-                "title": "{S('Interface')}"
+                "title": "{l.tr('Interface')}"
             }},
             {{
                 "type": "options",
-                "title": "{S('Language')}",
-                "desc": "{S('Language of the application (needs restart)')}",
+                "title": "{l.tr('Language')}",
+                "desc": "{l.tr('Language of the application')}",
                 "section": "interface",
                 "key": "lang",
-                "options": ["{'", "'.join(lang for lang in resources.STRINGS.keys())}"]
+                "options": ["{'", "'.join(langs)}"]
             }},
             {{
                 "type": "title",
-                "title": "{S('TV Connection')}"
+                "title": "{l.tr('TV Connection')}"
             }},
             {{
                 "type": "help",
-                "help": "{S('_advanced_settings_help')}"
+                "help": "{l.tr('_advanced_settings_help')}"
             }},
             {{
                 "type": "string",
-                "title": "{S('IP Address')}",
-                "desc": "{S('IP address of the Philips TV')}",
+                "title": "{l.tr('IP Address')}",
+                "desc": "{l.tr('IP address of the Philips TV')}",
                 "section": "philipstv",
                 "key": "host"
             }},
             {{
                 "type": "mac_address",
-                "title": "{S('MAC Address')}",
-                "desc": "{S('MAC address of the Philips TV used for wakeup')}",
+                "title": "{l.tr('MAC Address')}",
+                "desc": "{l.tr('MAC address of the Philips TV used for wakeup')}",
                 "section": "philipstv",
                 "key": "mac"
             }},
             {{
                 "type": "pair_button",
                 "method": "pair",
-                "text": "{S('Pair')}"
+                "text": "{l.tr('Pair')}"
             }}
         ]
         """
         settings.register_type('pair_button', SettingButton)
         settings.register_type('mac_address', SettingMac)
         settings.register_type('help', SettingHelp)
-        settings.add_json_panel(S('Settings'), self.config, data=connection)
+        settings.add_json_panel(l.tr('Settings'), self.config, data=connection)
 
     def display_settings(self, settings):
         panel = self.root.ids.settings
@@ -244,12 +264,21 @@ class PhilipsTVApp(App):
         return False
 
     def on_config_change(self, config, section, key, value):
-        if section != 'philipstv':
-            return
-        if key == 'host':
-            self.api.host = value
-        if key == 'mac':
-            self.api.mac = value
+        if section == 'philipstv':
+            if key == 'host':
+                self.api.host = value
+            if key == 'mac':
+                self.api.mac = value
+        elif section == 'interface' :
+            if key == 'lang':
+                l.switch_lang(self._get_lang())
+                trans = self.root.transition
+                try:
+                    self.root.transition = NoTransition()
+                    self.close_settings()
+                    self.open_settings()
+                finally:
+                    self.root.transition = trans
 
     def on_key_press_back(self, window, key, *args):
         if key == 27:
@@ -283,7 +312,7 @@ class PhilipsTVApp(App):
         try:
             data = self.api.pair_request()
         except Exception as err:
-            toast(S(err), 4.0)
+            toast(l.tr(err), 4.0)
             return
 
         if data is not None:
@@ -292,7 +321,7 @@ class PhilipsTVApp(App):
                 try:
                     self.api.pair_grant(pin=instance.ids.pin_value.text, **data)
                 except Exception as err:
-                    toast(S(err), 4.0)
+                    toast(l.tr(err), 4.0)
                 else:
                     self.save_auth()
                     if callback is not None:
@@ -306,14 +335,14 @@ class PhilipsTVApp(App):
         try:
             self.api.send_key(key)
         except Exception as err:
-            toast(S(err), 4.0)
+            toast(l.tr(err), 4.0)
 
     def fill_display_modes(self, widget):
         try:
             items = self.api.get_settings(self.api.PICTURE_STYLE)[self.api.PICTURE_STYLE]['data']
             selected_item = items['selected_item']
             translations = self.api.get_strings(
-                *(i['string_id'] for i in items['enum_values']), country=S('_country'), lang=S('_lang')
+                *(i['string_id'] for i in items['enum_values']), country=l.tr('_country'), lang=l.tr('_lang')
             )
             widget.data = [{
                 'text': translations.get(item['string_id'], item['string_id']),
@@ -327,7 +356,7 @@ class PhilipsTVApp(App):
                 'allow_no_selection': False,
             } for item in items['enum_values'] if item['available']]
         except Exception as err:
-            toast(S(err), 4.0)
+            toast(l.tr(err), 4.0)
             widget.data = []
 
     def fill_ambilight(self):
@@ -356,7 +385,7 @@ class PhilipsTVApp(App):
                         105: 'org.droidtv.ui.strings.R.string.MAIN_FOLLOW_AUDIO_STYLE_4'
                     })
                 selected_item = data['selected_item']
-                translations = self.api.get_strings(*items.values(), country=S('_country'), lang=S('_lang'))
+                translations = self.api.get_strings(*items.values(), country=l.tr('_country'), lang=l.tr('_lang'))
                 widget.data = [{
                     'text': translations[string_id],
                     'group': 'ambilight',
@@ -379,19 +408,19 @@ class PhilipsTVApp(App):
             ids.ambilight_lightness.value = settings[self.api.AMBILIGHT_LIGHTNESS]['data']['value']
             ids.ambilight_saturation.value = settings[self.api.AMBILIGHT_SATURATION]['data']['value']
         except Exception as err:
-            toast(S(err), 4.0)
+            toast(l.tr(err), 4.0)
 
     def on_ambilight_lightness(self, widget, value):
         try:
             self.api.update_setting(self.api.AMBILIGHT_LIGHTNESS, {'value': value})
         except Exception as err:
-            toast(S(err), 4.0)
+            toast(l.tr(err), 4.0)
 
     def on_ambilight_saturation(self, widget, value):
         try:
             self.api.update_setting(self.api.AMBILIGHT_SATURATION, {'value': value})
         except Exception as err:
-            toast(S(err), 4.0)
+            toast(l.tr(err), 4.0)
 
     def on_ambilight_color(self):
         try:
@@ -408,7 +437,7 @@ class PhilipsTVApp(App):
             for tb in ToggleButton.get_widgets('ambilight'):
                 tb.state = 'normal'
         except Exception as err:
-            toast(S(err), 4.0)
+            toast(l.tr(err), 4.0)
 
     def fill_applications(self, widget):
         data = []
@@ -424,14 +453,14 @@ class PhilipsTVApp(App):
                     'action': app['intent']['action']
                 } for app in apps if app['type'] == app_type]
         except Exception as err:
-            toast(S(err), 4.0)
+            toast(l.tr(err), 4.0)
         widget.data = data
 
     def launch_application(self, widget):
         try:
             self.api.launch_application(package_name=widget.package_name, class_name=widget.class_name, action=widget.action)
         except Exception as err:
-            toast(S(err), 4.0)
+            toast(l.tr(err), 4.0)
 
 
 def run():
