@@ -2,6 +2,8 @@
 
 Simple Philips AndroidTV that suits my needs.
 
+[<img alt='Get it on Google Play' height='80px' src='https://play.google.com/intl/en_us/badges/static/images/badges/en_badge_web_generic.png'/>](https://play.google.com/store/apps/details?id=com.macdems.philipstv)
+
 ## Description
 
 This is an application providing remote control to Philips Android TV. It looks like this.
