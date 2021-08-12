@@ -405,6 +405,11 @@ ScreenManager:
                     size_hint: 1, None
                     height: self.minimum_height
                     orientation: 'vertical'
+            Label:
+                text: l.tr('If your TV is not on the list, make sure, it is turned on and the phone is in the same WiFi as the TV...\n\n')
+                text_size: self.width, None
+                halign: 'center'
+                size_hint: 1, None
             Button:
                 text: l.tr('Advanced...')
                 size_hint: 1, None

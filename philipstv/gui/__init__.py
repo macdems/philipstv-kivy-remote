@@ -138,7 +138,6 @@ class PhilipsTVApp(App):
             except:
                 pass
 
-
     def start_discovery(self):
         if self._discover is None:
             self._discover = PhilipsTVDiscover(self._discover_add, self._discover_remove)
