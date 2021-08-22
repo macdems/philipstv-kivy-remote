@@ -18,7 +18,7 @@ from .widgets.toast import toast
 
 from .lang import l, DEFAULT as DEFAULT_LANG
 from .strings import STRINGS
-from ..api import PhilipsAPI, NotAuthorized
+from ..api import PhilipsAPI, NotAuthorized, ApiError
 from ..api.discover import PhilipsTVDiscover
 
 BASE_PATH = os.path.dirname(os.path.abspath(__file__))
@@ -49,12 +49,18 @@ class DiscoverButton(Factory.Button):
             app.config.set('philipstv', 'mac', '')
             app.config.write()
             app.setup_auth()
-            app.root.current = 'remote'
             try:
                 app.api.get_applications()
             except NotAuthorized:
-                app.pair(app.set_mac)
+                def after_pair():
+                    app.config.set('philipstv', 'host', app.api.host)
+                    app.config.write()
+                    app.root.current = 'remote'
+                    app.set_mac()
+                app.config.set('philipstv', 'host', '')
+                app.pair(after_pair)
             else:
+                app.root.current = 'remote'
                 app.set_mac()
         except Exception as err:
             toast(l.tr(err), 4.0)
@@ -313,22 +319,30 @@ class PhilipsTVApp(App):
         except Exception as err:
             toast(l.tr(err), 4.0)
             return
-
         if data is not None:
+            self._pair_stage2(data, callback)
 
-            def on_pin_entered(instance):
-                try:
-                    self.api.pair_grant(pin=instance.ids.pin_value.text, **data)
-                except Exception as err:
-                    toast(l.tr(err), 4.0)
+    def _pair_stage2(self, data, callback=None):
+        def on_pin_entered(instance):
+            del self._popup
+            try:
+                self.api.pair_grant(pin=instance.ids.pin_value.text, **data)
+            except ApiError as err:
+                if err.response['error_id'] == 'INVALID_PIN':
+                    self._pair_stage2(data, callback)
+                    toast(l.tr("Invalid PIN"), 4.0)
                 else:
-                    self.save_auth()
-                    if callback is not None:
-                        callback()
+                    toast(l.tr(err), 4.0)
+            except Exception as err:
+                toast(l.tr(err), 4.0)
+            else:
+                self.save_auth()
+                if callback is not None:
+                    callback()
 
-            popup = Factory.PinPopup()
-            popup.bind(on_dismiss=on_pin_entered)
-            popup.open()
+        self._popup = Factory.PinPopup()
+        self._popup.bind(on_dismiss=on_pin_entered)
+        self._popup.open()
 
     def keypress(self, key):
         try:

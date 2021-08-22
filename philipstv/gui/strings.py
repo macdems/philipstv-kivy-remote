@@ -29,6 +29,7 @@ STRINGS = {
         'Lightness': "Jasność",
         'Saturation': "Nasycenie",
         'Enter PIN displayed on your TV': "Wprowadź kod PIN wyświetlony na ekranie telewizora",
+        'Invalid PIN': "Niepoprawny kod PIN",
         '_advanced_settings_help':
             'Otwórz ustawienia telewizora i wybierz [b]Wireless and Networks[/b] > [b]Wired of Wi-Fi[/b] '
             '> [b]View network settings[/b]. Zanotuj wyświetlony adres IP. Następnie wprowadź go poniżej '
@@ -37,7 +38,7 @@ STRINGS = {
         'Cannot reach TV. Make sure you have set correct IP and Wake-on-Lan on your TV is on.':
             "Nie można połączyć się z telewizorem. Upewnij się, że masz ustawiony prawidłowy adres IP, "
             "a funkcja Wake-on-Lan na telewizorze jest włączona. ",
-        'Remote not authorized. Please pair again.': "Pilot nie posiada autoryzacji. Proszę spować go ponownie.",
+        'Remote not authorized. Please pair again.': "Pilot nie posiada autoryzacji. Proszę sparować go ponownie.",
         'No host. Please set IP of your TV.': "Brak zdefiniowanego adresu IP telewizora. Proszę go podać w ustawieniach.",
         'If your TV is not on the list, make sure, it is turned on and the phone is in the same WiFi as the TV...\n\n':
             "Jeżeli Twojego telewizora nie ma na liście powyżej, upewnij się, że jest on włączony, a telefon jest "

@@ -33,7 +33,11 @@ class NotAuthorized(Exception):
 
 
 class ApiError(requests.RequestException):
-    pass
+    def __str__(self):
+        try:
+            return self.response['error_text']
+        except:
+            return super().__str__()
 
 
 class PhilipsAPI:
@@ -131,7 +135,7 @@ class PhilipsAPI:
             waketime (float, optional): Time to wait after waking the TV. If None, class defaults are used.
         """
         if waketime is None: waketime = self._waketime
-        if self.mac is not None:
+        if self.mac:
             send_magic_packet(self.mac)
             sleep(waketime)
 
@@ -211,7 +215,7 @@ class PhilipsAPI:
             'id': user
         }
         request_data = {'scope': ['read', 'write', 'control'], 'device': device}
-        resp = self.post('pair/request', request_data, auth=False)
+        resp = self.post('pair/request', request_data, auth=False, timeout=self._timeout*2)
         if resp is None or resp['error_id'] != 'SUCCESS':
             raise ApiError(response=resp)
         return {'device': device, 'user': user, 'passwd': resp['auth_key'], 'auth_timestamp': resp['timestamp']}
@@ -233,7 +237,9 @@ class PhilipsAPI:
             'auth_signature': 'authsignature'
         }
         grant_data = {'auth': auth, 'device': device}
-        self.post('pair/grant', grant_data, auth=HTTPDigestAuth(user, passwd))
+        resp = self.post('pair/grant', grant_data, auth=HTTPDigestAuth(user, passwd))
+        if resp is None or resp['error_id'] != 'SUCCESS':
+            raise ApiError(response=resp)
         self._user = user
         self._passwd = passwd
         self._create_auth()
