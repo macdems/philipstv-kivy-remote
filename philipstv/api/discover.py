@@ -53,7 +53,7 @@ class PhilipsTVDiscover():
     def start(self):
         self._zeroconf = Zeroconf()
         listener = PhilipsTVListener(self.on_add, self.on_remove, self.timeout)
-        self._browser = ServiceBrowser(self._zeroconf, "_androidtvremote._tcp.local.", listener)
+        self._browser = ServiceBrowser(self._zeroconf, ["_androidtvremote._tcp.local.", "_androidtvremote2._tcp.local."], listener)
 
     def stop(self):
         if self._zeroconf is not None:
